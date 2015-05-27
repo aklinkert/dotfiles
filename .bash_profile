@@ -19,6 +19,8 @@ alias gd="git diff"
 alias gf="git fetch --prune && git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d"
 alias gb="git branch"
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
+alias gfrs="git flow release start"
+alias gfrf="git flow release finish"
 
 source ~/git-completion.bash
 source ~/liquidprompt

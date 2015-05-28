@@ -22,5 +22,8 @@ alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
 alias gfrs="git flow release start"
 alias gfrf="git flow release finish"
 
+alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
+alias FUCK='fuck'
+
 source ~/git-completion.bash
 source ~/liquidprompt

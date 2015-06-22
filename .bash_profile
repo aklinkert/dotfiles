@@ -1,5 +1,4 @@
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$PATH
-export EDITOR="subl -w"
 
 alias l="ls -al"
 alias cl="clear"

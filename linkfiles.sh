@@ -1,6 +1,6 @@
 #!/bin/bash
 ############################
-# .make.sh
+# linkfiles.sh
 # This script creates symlinks from the home directory to any desired dotfiles in ~/dotfiles
 ############################
 
@@ -10,7 +10,7 @@ dir=~/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
 
 # list of files/folders to symlink in homedir
-files=".gitignore_global .bash_profile git-completion.bash"
+files=".gitignore_global .bash_profile git-completion.bash .htoprc .inputrc"
 
 ##########
 

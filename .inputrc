@@ -1,0 +1,20 @@
+set input-meta on
+set output-meta on
+set convert-meta off
+
+# CTRL + SHIFT + Arrow
+# "\e[1;6D": backward-word
+# "\e[1;6C": forward-word
+
+# CTRL + Arrows
+# "\e[1;5D": backward-word
+# "\e[1;5C": forward-word
+
+# AL + arrow
+"\e[1;9D": backward-word
+"\e[1;9C": forward-word
+"\e\e[D": backward-word
+"\e\e[C": forward-word
+
+"\e\UF729": beginning-of-line
+"\e\UF72B": end-of-line

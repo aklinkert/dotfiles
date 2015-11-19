@@ -1,8 +1,16 @@
-export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$PATH
+export NVM_DIR=~/.nvm
+source $(brew --prefix nvm)/nvm.sh
 
-alias l="ls -al"
+export PYTHONPATH=/src/github/ansible/lib:
+export MANPATH=/src/github/ansible/docs/man:
+export PATH=~/bin:/src/github/ansible/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$PATH
+
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+  . $(brew --prefix)/etc/bash_completion
+fi
+
+alias l="ls -alh"
 alias cl="clear"
-
 alias ga="git add"
 alias gaa="git add --all :/"
 alias gcm="git commit -m"
@@ -20,7 +28,9 @@ alias gb="git branch"
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
 alias gfrs="git flow release start"
 alias gfrf="git flow release finish"
-
+alias gfhs="git flow hotfix start"
+alias gfhf="git flow hotfix finish"
+alias git="hub"
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias FUCK='fuck'
 

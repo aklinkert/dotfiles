@@ -3,7 +3,7 @@ source $(brew --prefix nvm)/nvm.sh
 
 export PYTHONPATH=/src/github/ansible/lib:
 export MANPATH=/src/github/ansible/docs/man:
-export PATH=~/bin:/src/github/ansible/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$PATH
+export PATH=~/bin:~/.composer/vendor/bin:/src/github/ansible/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$PATH
 
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
@@ -15,8 +15,9 @@ alias ga="git add"
 alias gaa="git add --all :/"
 alias grc="gaa; git rebase --continue"
 alias gcm="git commit -m"
-alias gca="git commit --ammend"
-alias gpo="git push origin $1 && git push origin --tags"
+alias gca="git commit --amend"
+alias gpo="git push origin"
+alias gpot="git push origin --tags"
 alias grom="git rebase origin/master"
 alias grod="git rebase origin/develop"
 alias gp="git pull"

@@ -16,6 +16,7 @@ alias gaa="git add --all :/"
 alias grc="gaa; git rebase --continue"
 alias gcm="git commit -m"
 alias gca="git commit --amend"
+alias gpr="git pull-request"
 alias gpo="git push origin"
 alias gpot="git push origin --tags"
 alias grom="git rebase origin/master"
@@ -35,6 +36,6 @@ alias gfhf="git flow hotfix finish"
 alias git="hub"
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias FUCK='fuck'
-
+alias dns="sudo killall -HUP mDNSResponder"
 source ~/git-completion.bash
 source ~/liquidprompt

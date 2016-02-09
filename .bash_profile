@@ -9,7 +9,7 @@ if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
 
-alias l="ls -alh"
+alias ll="ls -alh"
 alias cl="clear"
 alias ga="git add"
 alias gaa="git add --all :/"

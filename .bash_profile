@@ -1,6 +1,6 @@
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
-if [ -f $(brew --prefixnvm)/nvm.sh ]; then
+if [ -f $(brew --prefix nvm)/nvm.sh ]; then
   source  $(brew --prefix nvm)/nvm.sh
 fi
 

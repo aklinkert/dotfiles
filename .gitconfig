@@ -18,3 +18,5 @@
 	required = true
 [hub]
 	protocol = ssh
+[credential]
+	helper = osxkeychain

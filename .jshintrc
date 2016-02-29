@@ -34,14 +34,10 @@
 
     "describe": true,
     "it": true,
-    "before": true,
+    "expect": true,
     "beforeEach": true,
-    "after": true,
     "afterEach": true,
     "module": true,
-    "inject": true,
-
-    "expect": true,
-    "sinon": true
+    "inject": true
   }
 }

@@ -4,6 +4,8 @@ if [ -f $(brew --prefix nvm)/nvm.sh ]; then
   source  $(brew --prefix nvm)/nvm.sh
 fi
 
+export GIT_MERGE_AUTOEDIT=no
+
 export PYTHONPATH=/src/github/ansible/lib:
 export MANPATH=/src/github/ansible/docs/man:
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$PATH
@@ -19,6 +21,7 @@ alias gaa="git add --all :/"
 alias grc="gaa; git rebase --continue"
 alias gcm="git commit -m"
 alias gca="git commit --amend"
+alias gcan="git commit --amend --no-edit"
 alias gpr="git pull-request"
 alias gpo="git push origin"
 alias gpot="git push origin --tags"
@@ -29,6 +32,7 @@ alias gs="git status"
 alias gsa="git stash save"
 alias gsp="git stash pop"
 alias gd="git diff"
+alias gu="git up"
 alias gf="git fetch --prune && git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d"
 alias gb="git branch"
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
@@ -62,3 +66,11 @@ export AWS_S3_REGION=eu-central-1
 export MASTER_SIZE=t2.micro
 export MINION_SIZE=t2.micro
 export INSTANCE_PREFIX=kube
+
+# The next line updates PATH for the Google Cloud SDK.
+[[ -s "~/google-cloud-sdk/path.bash.inc" ]] && source '/Users/apinnecke/google-cloud-sdk/path.bash.inc'
+
+# The next line enables shell command completion for gcloud.
+[[ -s "~/google-cloud-sdk/completion.bash.inc" ]] && source '/Users/apinnecke/google-cloud-sdk/completion.bash.inc'
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*

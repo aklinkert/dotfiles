@@ -5,13 +5,50 @@ if [ -f $(brew --prefix nvm)/nvm.sh ]; then
 fi
 
 export GIT_MERGE_AUTOEDIT=no
+export GOPATH=/src/go
+export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$GOPATH/bin:$PATH
 
-export PYTHONPATH=/src/github/ansible/lib:
-export MANPATH=/src/github/ansible/docs/man:
-export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$PATH
+if [ -f $(brew --prefix homebrew/php/php56)  ]; then
+  export PATH="$(brew --prefix homebrew/php/php56)/bin:$PATH"
+fi
 
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
+fi
+
+if type npm version &>/dev/null; then
+  . <(npm completion)
+
+  _npm_completion () {
+        local words cword
+        if type _get_comp_words_by_ref &>/dev/null; then
+            _get_comp_words_by_ref -n = -n @ -w words -i cword
+        else
+            cword="$COMP_CWORD"
+            words=("${COMP_WORDS[@]}")
+        fi
+
+        local si="$IFS"
+
+
+        # if your npm command includes `install` or `i `
+        if [[ ${words[@]} =~ 'install' ]] || [[ ${words[@]} =~ 'i ' ]]; then
+            local cur=${COMP_WORDS[COMP_CWORD]}
+
+            # supply autocomplete words from `~/.npm`, with $cur being value of current expansion like 'expre'
+            COMPREPLY=( $( compgen -W "$(ls ~/.npm )" -- $cur ) )
+        else
+            IFS=$'\n' COMPREPLY=($(COMP_CWORD="$cword" \
+                COMP_LINE="$COMP_LINE" \
+                COMP_POINT="$COMP_POINT" \
+                npm completion -- "${words[@]}" \
+                2>/dev/null)) || return $?
+        fi
+
+        IFS="$si"
+    }
+
+    complete -o default -F _npm_completion npm  
 fi
 
 alias ll="ls -alh"
@@ -44,33 +81,15 @@ alias git="hub"
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias FUCK='fuck'
 alias dns="sudo killall -HUP mDNSResponder"
-alias docker-env='eval "$(docker-machine env default)"'
-
-update-docker-host(){
-	# clear existing docker.local entry from /etc/hosts
-	sudo sed -i '' '/[[:space:]]docker\.local$/d' /etc/hosts
-
-	# get ip of running machine
-	export DOCKER_IP="$(echo ${DOCKER_HOST} | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
-
-	# update /etc/hosts with docker machine ip
-	[[ -n $DOCKER_IP ]] && sudo /bin/bash -c "echo \"${DOCKER_IP}	docker.local\" >> /etc/hosts"
-}
+alias docker-clean-images="docker rmi $(docker images | grep "^<none>" | awk '{print $3; }')"
 
 source ~/git-completion.bash
 source ~/liquidprompt
 
-export KUBERNETES_PROVIDER=aws
-export KUBE_AWS_ZONE=eu-central-1a
-export AWS_S3_REGION=eu-central-1
-export MASTER_SIZE=t2.micro
-export MINION_SIZE=t2.micro
-export INSTANCE_PREFIX=kube
-
 # The next line updates PATH for the Google Cloud SDK.
-[[ -s "~/google-cloud-sdk/path.bash.inc" ]] && source '/Users/apinnecke/google-cloud-sdk/path.bash.inc'
+[[ -s "$HOME/google-cloud-sdk/path.bash.inc" ]] && source "$HOME/google-cloud-sdk/path.bash.inc"
 
 # The next line enables shell command completion for gcloud.
-[[ -s "~/google-cloud-sdk/completion.bash.inc" ]] && source '/Users/apinnecke/google-cloud-sdk/completion.bash.inc'
+[[ -s "$HOME/google-cloud-sdk/completion.bash.inc" ]] && source "$HOME/google-cloud-sdk/completion.bash.inc"
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*

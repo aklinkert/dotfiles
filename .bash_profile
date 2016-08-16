@@ -17,7 +17,7 @@ if [ -f $(brew --prefix)/etc/bash_completion ]; then
 fi
 
 if type npm version &>/dev/null; then
-  . <(npm completion)
+  npm completion | bash
 
   _npm_completion () {
         local words cword
@@ -81,8 +81,14 @@ alias git="hub"
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias FUCK='fuck'
 alias dns="sudo killall -HUP mDNSResponder"
-alias docker-clean-images="docker rmi $(docker images | grep "^<none>" | awk '{print $3; }')"
 
+function docker-clean-images() {
+    docker rmi -f $(docker images -a | grep "<none>" | awk '{print $3}')
+}
+
+hash-key () {
+    echo -n "${1}" | openssl dgst -sha256 | cut -c-9
+}
 source ~/git-completion.bash
 source ~/liquidprompt
 

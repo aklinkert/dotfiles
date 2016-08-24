@@ -86,6 +86,10 @@ function docker-clean-images() {
     docker rmi -f $(docker images -a | grep "<none>" | awk '{print $3}')
 }
 
+function docker-remove-stopped() {
+    docker ps --filter status=exited -q | xargs docker rm -f
+}
+
 hash-key () {
     echo -n "${1}" | openssl dgst -sha256 | cut -c-9
 }
@@ -99,3 +103,5 @@ source ~/liquidprompt
 [[ -s "$HOME/google-cloud-sdk/completion.bash.inc" ]] && source "$HOME/google-cloud-sdk/completion.bash.inc"
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+[[ -s "$HOME/.sloppy_config" ]] && source "$HOME/.sloppy_config"

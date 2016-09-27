@@ -5,7 +5,7 @@ if [ -f $(brew --prefix nvm)/nvm.sh ]; then
 fi
 
 export GIT_MERGE_AUTOEDIT=no
-export GOPATH=/src/go
+export GOPATH=~/src/go
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$GOPATH/bin:$PATH
 
 if [ -f $(brew --prefix homebrew/php/php56)  ]; then

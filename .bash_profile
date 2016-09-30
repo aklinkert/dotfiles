@@ -5,7 +5,7 @@ if [ -f $(brew --prefix nvm)/nvm.sh ]; then
 fi
 
 export GIT_MERGE_AUTOEDIT=no
-export GOPATH=~/src/go
+export GOPATH=~
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$GOPATH/bin:$PATH
 
 if [ -f $(brew --prefix homebrew/php/php56)  ]; then
@@ -96,12 +96,6 @@ hash-key () {
 source ~/git-completion.bash
 source ~/liquidprompt
 
-# The next line updates PATH for the Google Cloud SDK.
-[[ -s "$HOME/google-cloud-sdk/path.bash.inc" ]] && source "$HOME/google-cloud-sdk/path.bash.inc"
-
-# The next line enables shell command completion for gcloud.
-[[ -s "$HOME/google-cloud-sdk/completion.bash.inc" ]] && source "$HOME/google-cloud-sdk/completion.bash.inc"
-
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
-[[ -s "$HOME/.sloppy_config" ]] && source "$HOME/.sloppy_config"
+[[ -s "$HOME/.tokens" ]] && source "$HOME/.tokens"

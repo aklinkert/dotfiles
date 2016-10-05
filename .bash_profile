@@ -16,41 +16,6 @@ if [ -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
 
-if type npm version &>/dev/null; then
-  npm completion | bash
-
-  _npm_completion () {
-        local words cword
-        if type _get_comp_words_by_ref &>/dev/null; then
-            _get_comp_words_by_ref -n = -n @ -w words -i cword
-        else
-            cword="$COMP_CWORD"
-            words=("${COMP_WORDS[@]}")
-        fi
-
-        local si="$IFS"
-
-
-        # if your npm command includes `install` or `i `
-        if [[ ${words[@]} =~ 'install' ]] || [[ ${words[@]} =~ 'i ' ]]; then
-            local cur=${COMP_WORDS[COMP_CWORD]}
-
-            # supply autocomplete words from `~/.npm`, with $cur being value of current expansion like 'expre'
-            COMPREPLY=( $( compgen -W "$(ls ~/.npm )" -- $cur ) )
-        else
-            IFS=$'\n' COMPREPLY=($(COMP_CWORD="$cword" \
-                COMP_LINE="$COMP_LINE" \
-                COMP_POINT="$COMP_POINT" \
-                npm completion -- "${words[@]}" \
-                2>/dev/null)) || return $?
-        fi
-
-        IFS="$si"
-    }
-
-    complete -o default -F _npm_completion npm  
-fi
-
 alias ll="ls -alh"
 alias cl="clear"
 alias ga="git add"
@@ -90,9 +55,14 @@ function docker-remove-stopped() {
     docker ps --filter status=exited -q | xargs docker rm -f
 }
 
-hash-key () {
+function hash-key () {
     echo -n "${1}" | openssl dgst -sha256 | cut -c-9
 }
+
+function gobuild-linux() {
+    CGO_ENABLED=0 go build -a -ldflags '-s' -installsuffix cgo -o "$(basename "$PWD")" .
+}
+
 source ~/git-completion.bash
 source ~/liquidprompt
 

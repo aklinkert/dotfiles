@@ -60,7 +60,7 @@ function hash-key () {
 }
 
 function gobuild-linux() {
-    CGO_ENABLED=0 go build -a -ldflags '-s' -installsuffix cgo -o "$(basename "$PWD")" .
+    CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-s' -installsuffix cgo -o "$(basename "$PWD")" .
 }
 
 source ~/git-completion.bash

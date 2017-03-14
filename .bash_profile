@@ -1,20 +1,8 @@
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
-if [ -f $(brew --prefix nvm)/nvm.sh ]; then
-  source  $(brew --prefix nvm)/nvm.sh
-fi
-
 export GIT_MERGE_AUTOEDIT=no
-export GOPATH=~
+export GOPATH=~:~/src/github.com/costacruise/one/go-apis/:~/src/github.com/costacruise/one/go-apis/vendor/
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$GOPATH/bin:$PATH
-
-if [ -f $(brew --prefix homebrew/php/php56)  ]; then
-  export PATH="$(brew --prefix homebrew/php/php56)/bin:$PATH"
-fi
-
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
-  . $(brew --prefix)/etc/bash_completion
-fi
 
 alias ll="ls -alh"
 alias cl="clear"
@@ -36,7 +24,6 @@ alias gsp="git stash pop"
 alias gd="git diff"
 alias gu="git up"
 alias gf="git fetch --prune && git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d"
-alias gb="git branch"
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
 alias gfrs="git flow release start"
 alias gfrf="git flow release finish"
@@ -63,19 +50,10 @@ function gobuild-linux() {
     CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-s' -installsuffix cgo -o "$(basename "$PWD")" .
 }
 
-source ~/git-completion.bash
 source ~/liquidprompt
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+[ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
+[ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion
 
-[[ -s "$HOME/.tokens" ]] && source "$HOME/.tokens"
+alias aws-login="eval $(aws ecr get-login)"
 
-# The next line updates PATH for the Google Cloud SDK.
-if [ -f /Users/apinnecke/google-cloud-sdk/path.bash.inc ]; then
-  source '/Users/apinnecke/google-cloud-sdk/path.bash.inc'
-fi
-
-# The next line enables shell command completion for gcloud.
-if [ -f /Users/apinnecke/google-cloud-sdk/completion.bash.inc ]; then
-  source '/Users/apinnecke/google-cloud-sdk/completion.bash.inc'
-fi

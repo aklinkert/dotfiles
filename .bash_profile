@@ -51,7 +51,7 @@ function gobuild-linux() {
 }
 
 source ~/liquidprompt
-
+source "/usr/local/opt/nvm/nvm.sh"
 [ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
 [ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion
 

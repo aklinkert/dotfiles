@@ -674,7 +674,7 @@
 			<key>Packer</key>
 			<dict>
 				<key>date</key>
-				<date>2017-04-11T12:51:38Z</date>
+				<date>2017-04-23T22:08:30Z</date>
 				<key>entry</key>
 				<dict>
 					<key>aliases</key>
@@ -1179,6 +1179,8 @@
 	<true/>
 	<key>shouldShowStatusIcon</key>
 	<false/>
+	<key>shouldStartAtLogin</key>
+	<true/>
 	<key>shouldSyncBookmarks</key>
 	<true/>
 	<key>shouldSyncDocsets</key>

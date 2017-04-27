@@ -5,7 +5,7 @@
 	default = simple
 	followTags = true
 [core]
-	excludesfile = /Users/apinnecke/.gitignore_global
+	excludesfile = ~/.gitignore_global
 	mergeoptions = --no-edit
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"

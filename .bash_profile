@@ -45,7 +45,15 @@ function gobuild-linux {
     CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-s' -installsuffix cgo -o "$(basename "$PWD")" .
 }
 
+function http-server {
+    docker rm http-server || true
+    echo "Server listening on http://localhost:8080 "
+    docker run --name http-server -it -p 8080:80  -v "$(pwd):/usr/share/nginx/html:ro" nginx:alpine
+}
+
+source ~/git-completion.bash
 source ~/liquidprompt
+
 source "/usr/local/opt/nvm/nvm.sh"
 [ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
 [ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion

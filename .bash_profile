@@ -1,7 +1,7 @@
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
-export GOPATH=~:~/src/github.com/costacruise/one/go-apis/:~/src/github.com/costacruise/one/go-apis/vendor/
+export GOPATH=~
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$GOPATH/bin:$PATH
 
 alias ll="ls -alh"
@@ -63,4 +63,4 @@ function  aws-login {
 	eval $(aws ecr get-login)
 }
 
-
+eval "$(direnv hook bash)"

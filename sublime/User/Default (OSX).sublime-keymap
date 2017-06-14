@@ -1,0 +1,89 @@
+[
+  {
+    "keys": [
+      "super+minus"
+    ],
+    "command": "toggle_comment",
+    "args": {
+      "block": false
+    }
+  },
+  {
+    "keys": [
+      "super+s"
+    ],
+    "command": "chain",
+    "args": {
+      "commands": [
+        [
+          "reveal_in_side_bar"
+        ],
+        [
+          "save"
+        ]
+      ]
+    }
+  },
+  {
+    "keys": [
+      "super+shift+x"
+    ],
+    "command": "run_macro_file",
+    "args": {
+      "file": "res://Packages/Default/Delete Line.sublime-macro"
+    }
+  },
+  {
+    "keys": [
+      "f3"
+    ],
+    "command": "gs_doc",
+    "args": {
+      "mode": "goto"
+    },
+    "context": [
+      {
+        "key": "selector",
+        "operator": "equal",
+        "operand": "source.go"
+      }
+    ]
+  },
+  {
+    "keys": [
+      "f3"
+    ],
+    "command": "gs9o_open_selection",
+    "context": [
+      {
+        "key": "selector",
+        "operator": "equal",
+        "operand": "text.9o"
+      }
+    ]
+  },
+  {
+    "keys": [
+      "super+alt+down"
+    ],
+    "command": "duplicate_line"
+  },
+  {
+    "keys": [
+      "super+backspace"
+    ],
+    "command": "side_bar_delete",
+    "context": [
+      {
+        "key": "control",
+        "operand": "sidebar_tree"
+      }
+    ]
+  },
+  {
+    "keys": [
+      "super+0"
+    ],
+    "command": "focus_side_bar"
+  }
+]

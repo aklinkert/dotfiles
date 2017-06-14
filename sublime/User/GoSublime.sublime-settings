@@ -1,0 +1,26 @@
+{
+	"autocomplete_builtins": true,
+	"autocomplete_suggest_imports": true,
+	"autosave": true,
+	"on_save": [
+		"goimports",
+	],
+
+	"env": {
+		"GOPATH": "$HOME/src/github.com/costacruise/one/go-apis:$HOME",
+		"PATH": "$HOME/bin:/usr/local/opt/go/libexec/bin:$PATH",
+		"GOROOT": "/usr/local/opt/go/libexec"
+	},
+
+  	"fmt_cmd": ["goimports"],
+
+	// "comp_lint_commands": [
+	//     {"cmd": ["golint *.go"], "shell": true},
+	//     {"cmd": ["go", "vet"]},
+	//     {"cmd": ["go", "install"]}
+	// ],
+
+	// "comp_lint_enabled": true,
+
+	"auto_complete_triggers": [ {"selector": "source.go", "characters": "."} ]
+}

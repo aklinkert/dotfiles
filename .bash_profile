@@ -31,11 +31,23 @@ alias FUCK='fuck'
 alias dns="sudo killall -HUP mDNSResponder"
 
 function docker-clean-images {
-    docker rmi -f $(docker images -a | grep "<none>" | awk '{print $3}')
+    docker images -f dangling=true -q | xargs docker rmi -f
+}
+
+function docker-remove-status {
+    docker ps --filter status=$1 -q | xargs docker stop
 }
 
 function docker-remove-stopped {
-    docker ps --filter status=exited -q | xargs docker rm -f
+    docker-remove-status exited
+}
+
+function docker-remove-all {
+    docker ps -a -q | xargs docker rm -f
+}
+
+function docker-stop-all {
+    docker ps --filter status=running -q | xargs docker stop
 }
 
 function hash-key {
@@ -61,6 +73,12 @@ source "/usr/local/opt/nvm/nvm.sh"
 
 function  aws-login {
 	eval $(aws ecr get-login)
+}
+
+function clear-dns-cache {
+    sudo dscacheutil -flushcache
+    sudo killall -HUP mDNSResponder
+    echo "DNS cache flushed"
 }
 
 eval "$(direnv hook bash)"

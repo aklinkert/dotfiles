@@ -1,7 +1,7 @@
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
-export GOPATH=~
+export GOPATH=~/go
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$GOPATH/bin:$PATH
 
 alias ll="ls -alh"
@@ -29,6 +29,15 @@ alias git="hub"
 alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
 alias FUCK='fuck'
 alias dns="sudo killall -HUP mDNSResponder"
+
+function kube-port-forward {
+    if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+        echo "Usage: kube-port-forward <namespace> <deployment> <port>"
+        return
+    fi
+    
+    kubectl -n "$1" port-forward "$(kubectl get pods -n $1 | grep $2 | awk '{ print $1 }')" "$3"
+}
 
 function docker-clean-images {
     docker images -f dangling=true -q | xargs docker rmi -f

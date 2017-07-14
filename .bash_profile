@@ -36,7 +36,10 @@ function kube-port-forward {
         return
     fi
     
-    kubectl -n "$1" port-forward "$(kubectl get pods -n $1 | grep $2 | head -n 1 | awk '{ print $1 }')" "$3"
+    command="kubectl -n "$1" port-forward $(kubectl get pods -n $1 | grep $2 | head -n 1 | awk '{ print $1 }') $3"
+    echo "executing ${command}"
+    
+    eval ${command}
 }
 
 function docker-clean-images {

@@ -26,8 +26,6 @@ alias gfrf="git flow release finish"
 alias gfhs="git flow hotfix start"
 alias gfhf="git flow hotfix finish"
 alias git="hub"
-alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
-alias FUCK='fuck'
 alias dns="sudo killall -HUP mDNSResponder"
 
 function kube-port-forward {
@@ -42,12 +40,16 @@ function kube-port-forward {
     eval ${command}
 }
 
+# thefuck config
+eval $(thefuck --alias)
+eval $(thefuck --alias FUCK)
+
 function docker-clean-images {
     docker images -f dangling=true -q | xargs docker rmi -f
 }
 
 function docker-remove-status {
-    docker ps --filter status=$1 -q | xargs docker stop
+    docker ps --filter status=$1 -q | xargs docker rm -f
 }
 
 function docker-remove-stopped {

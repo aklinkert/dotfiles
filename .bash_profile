@@ -40,10 +40,6 @@ function kube-port-forward {
     eval ${command}
 }
 
-# thefuck config
-eval $(thefuck --alias)
-eval $(thefuck --alias FUCK)
-
 function docker-clean-images {
     docker images -f dangling=true -q | xargs docker rmi -f
 }

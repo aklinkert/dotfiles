@@ -95,7 +95,11 @@ function http-server {
 source ~/git-completion.bash
 source ~/liquidprompt
 
-source "/usr/local/opt/nvm/nvm.sh"
+if [ -f "/usr/local/opt/nvm/nvm.sh" ]; then
+    source "/usr/local/opt/nvm/nvm.sh"
+fi
+
+
 [ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
 [ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion
 

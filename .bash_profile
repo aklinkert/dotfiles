@@ -1,7 +1,7 @@
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
-export GOPATH=~/go
+export GOPATH=~
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$GOPATH/bin:$PATH
 
 alias ll="ls -alh"
@@ -33,10 +33,10 @@ function kube-port-forward {
         echo "Usage: kube-port-forward <namespace> <deployment> <port>"
         return
     fi
-    
+
     command="kubectl -n "$1" port-forward $(kubectl get pods -n $1 | grep $2 | head -n 1 | awk '{ print $1 }') $3"
     echo "executing ${command}"
-    
+
     eval ${command}
 }
 
@@ -46,6 +46,24 @@ eval $(thefuck --alias FUCK)
 
 function docker-clean-images {
     docker images -f dangling=true -q | xargs docker rmi -f
+}
+
+function docker-delete-images {
+    if [ "${1}" == "" ]; then echo "Please pass a name pattern for grep"; return; fi
+
+    echo "Deleting the following images:"
+    docker images | grep "$1" | awk '{ print $1 }' | tr '\n' ' '
+    docker images | grep "$1" | awk '{ print $3 }' | xargs docker rmi -f
+}
+
+function docker-delete-all-images {
+    read -p "Are you FUCKING SURE? There is no way back! " -n 1 -r
+    echo    # (optional) move to a new line
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+      return
+    fi
+
+    docker images -q | xargs docker rmi -f
 }
 
 function docker-remove-status {

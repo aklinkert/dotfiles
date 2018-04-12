@@ -36,3 +36,15 @@
   'alt-up': 'editor:move-line-up'
   'shift-cmd-d': 'find-and-replace:select-undo'
   'cmd--': 'editor:toggle-line-comments'
+
+'.platform-linux atom-text-editor':
+  'ctrl-tab ^ctrl': 'unset!'
+  'ctrl-shift-tab ^ctrl': 'unset!'
+  'ctrl-tab': 'pane:show-next-item'
+  'ctrl-shift-tab': 'pane:show-previous-item'
+  'ctrl-alt-right': 'pane:show-next-item'
+  'ctrl-alt-left': 'pane:show-previous-item'
+  'ctrl--': 'editor:toggle-line-comments'
+  'alt-shift-x': 'editor:delete-line'
+  'ctrl-shift-d': 'find-and-replace:select-undo'
+  'alt-ctrl-down': 'editor:duplicate-lines'

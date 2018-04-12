@@ -1,8 +1,9 @@
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
-export GOPATH=~
-export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$GOPATH/bin:$PATH
+export GOPATH=~/go:~
+export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$HOME/go/bin:$PATH
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home/
 
 alias ll="ls -alh"
 alias ga="git add"
@@ -27,6 +28,21 @@ alias gfhs="git flow hotfix start"
 alias gfhf="git flow hotfix finish"
 alias git="hub"
 alias dns="sudo killall -HUP mDNSResponder"
+alias first_col="awk '{ print \$1 }'"
+alias second_col="awk '{ print \$2 }'"
+alias third_col="awk '{ print \$3 }'"
+alias cobra-init="GOPATH=$HOME cobra init ."
+
+function kube-delete-pods {
+    namespace="$1"
+    name="$2"
+    if [ "${name}" == "" ]; then
+        echo "Usage: kube-delete-pods <namespace> <name-filter>"
+	return
+    fi
+
+    kubectl get pods -n "${namespace}" | grep "${name}" | awk '{{ print $1 }}' | xargs kubectl -n "${namespace}" delete pod ${@:3}
+} 
 
 function kube-port-forward {
     if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
@@ -114,3 +130,9 @@ function clear-dns-cache {
 }
 
 eval "$(direnv hook bash)"
+eval $(thefuck --alias)
+
+function uuid-and-copy {
+    uuidgen | awk '{print tolower($0)}' | xargs echo -n | pbcopy
+}
+

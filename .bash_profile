@@ -1,3 +1,5 @@
+source ~/.bashrc
+
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
@@ -33,6 +35,22 @@ alias second_col="awk '{ print \$2 }'"
 alias third_col="awk '{ print \$3 }'"
 alias cobra-init="GOPATH=$HOME cobra init ."
 
+function gen-selfsigned-cert {
+    domain="$1"
+    if [ "${domain}" == "" ]; then
+        echo "Usage: ${0} <domain>"
+        return
+    fi
+
+    docker run --rm \
+        -e "SSL_SUBJECT=${domain}" \
+        -e "CA_SUBJECT=${domain}" \
+        -e "CA_EXPIRE=3650" \
+        -e "SSL_SIZE=4096" \
+        -e "SSL_DNS=*.${domain}" \
+        paulczar/omgwtfssl
+}
+
 function kube-delete-pods {
     namespace="$1"
     name="$2"
@@ -42,7 +60,7 @@ function kube-delete-pods {
     fi
 
     kubectl get pods -n "${namespace}" | grep "${name}" | awk '{{ print $1 }}' | xargs kubectl -n "${namespace}" delete pod ${@:3}
-} 
+}
 
 function kube-port-forward {
     if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
@@ -108,6 +126,16 @@ function http-server {
     docker run --name http-server -it -p 8080:80  -v "$(pwd):/usr/share/nginx/html:ro" nginx:alpine
 }
 
+function uuid-and-copy {
+    uuidgen | awk '{print tolower($0)}' | xargs echo -n | pbcopy
+}
+
+function clear-dns-cache {
+    sudo dscacheutil -flushcache
+    sudo killall -HUP mDNSResponder
+    echo "DNS cache flushed"
+}
+
 source ~/git-completion.bash
 source ~/liquidprompt
 
@@ -119,20 +147,5 @@ fi
 [ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
 [ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion
 
-function  aws-login {
-	eval $(aws ecr get-login)
-}
-
-function clear-dns-cache {
-    sudo dscacheutil -flushcache
-    sudo killall -HUP mDNSResponder
-    echo "DNS cache flushed"
-}
-
 eval "$(direnv hook bash)"
 eval $(thefuck --alias)
-
-function uuid-and-copy {
-    uuidgen | awk '{print tolower($0)}' | xargs echo -n | pbcopy
-}
-

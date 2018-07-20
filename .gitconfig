@@ -7,9 +7,6 @@
 [core]
 	excludesfile = ~/.gitignore_global
 	mergeoptions = --no-edit
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path =
 [filter "lfs"]
 	clean = git lfs clean %f
 	smudge = git lfs smudge %f
@@ -33,11 +30,11 @@
 	prompt = false
 [difftool "meld"]
 	trustExitCode = true
-	cmd = open -W -a Meld --args \"$LOCAL\" \"$PWD/$REMOTE\"
+	cmd = open -W -a Meld --args \"$LOCAL\" \"$REMOTE\"
 [merge]
 	tool = meld
 [mergetool]
 	prompt = false
 [mergetool "meld"]
 	trustExitCode = true
-	cmd = open -W -a Meld --args --auto-merge \"$PWD/$LOCAL\" \"$PWD/$BASE\" \"$PWD/$REMOTE\" --output=\"$PWD/$MERGED\"
+	cmd = open -W -a Meld --args --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output=\"$MERGED\"

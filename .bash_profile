@@ -1,11 +1,8 @@
-source ~/.bashrc
-
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
 export GOPATH=~/go:~
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$HOME/go/bin:$PATH
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home/
 
 alias ll="ls -alh"
 alias ga="git add"

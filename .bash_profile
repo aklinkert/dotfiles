@@ -15,7 +15,7 @@ alias gpr="git pull-request"
 alias grom="git rebase origin/master"
 alias grod="git rebase origin/develop"
 alias gpo="git push origin"
-alias gp="git pull"
+alias gp="git pull --rebase"
 alias gs="git status"
 alias gsa="git stash save"
 alias gsp="git stash pop"
@@ -145,4 +145,6 @@ fi
 [ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion
 
 eval "$(direnv hook bash)"
-eval $(thefuck --alias)
+eval "$(thefuck --alias)"
+source <(kubectl completion bash)
+

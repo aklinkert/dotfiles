@@ -1,5 +1,5 @@
 function gen-selfsigned-cert {
-    domain="$1"
+    local domain="$1"
     if [ "${domain}" == "" ]; then
         echo "Usage: ${0} <domain>"
         return
@@ -29,8 +29,8 @@ function kube-watch-all-without {
 }
 
 function kube-delete-pods {
-    namespace="$1"
-    name="$2"
+    local namespace="$1"
+    local name="$2"
     if [ "${name}" == "" ]; then
         echo "Usage: kube-delete-pods <namespace> <name-filter>"
 	return
@@ -45,7 +45,7 @@ function kube-port-forward {
         return
     fi
 
-    command="kubectl -n "$1" port-forward $(kubectl get pods -n $1 | grep $2 | head -n 1 | awk '{ print $1 }') $3"
+    local command="kubectl -n "$1" port-forward $(kubectl get pods -n $1 | grep $2 | head -n 1 | awk '{ print $1 }') $3"
     echo "executing ${command}"
 
     eval ${command}

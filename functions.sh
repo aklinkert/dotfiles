@@ -14,6 +14,20 @@ function gen-selfsigned-cert {
         paulczar/omgwtfssl
 }
 
+function kube-watch-all-without-kube-system {
+  kube-watch-all-without kube-system
+}
+
+function kube-watch-all-without {
+  local interval="${KUBE_WATCH_INTERVAL:-1}"
+  local cmdLine="kubectl get pods -o wide --all-namespaces ${filters}"
+
+  for filter in "$@"; do
+    cmdLine="${cmdLine} | grep -v \"${filter}\""
+  done
+  watch -n "${interval}" "${cmdLine}"
+}
+
 function kube-delete-pods {
     namespace="$1"
     name="$2"

@@ -1,4 +1,4 @@
 Host *
 	ForwardAgent yes
 	StrictHostKeyChecking no
-
+	UseKeychain yes

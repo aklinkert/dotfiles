@@ -136,3 +136,15 @@ function echoc {
     echo $exp
     tput sgr0
 }
+
+function reverse-rename-files {
+  local search=$1
+  local replace=$2
+
+  if [ -z "$1" ] || [ -z "$2" ]; then
+      echo "Usage: reverse-rename-files <search> <replace>"
+      return
+  fi
+
+  find . -iname "*${search}*" -exec rename "s/${search}/${replace}/" '{}' \;
+}

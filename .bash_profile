@@ -33,8 +33,8 @@ alias third_col="awk '{ print \$3 }'"
 alias cobra-init="GOPATH=$HOME cobra init ."
 
 source ~/functions.sh
-source ~/git-completion.bash
 source ~/liquidprompt
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && source "/usr/local/etc/profile.d/bash_completion.sh"
 
 if [ -f "/usr/local/opt/nvm/nvm.sh" ]; then
     source "/usr/local/opt/nvm/nvm.sh"

@@ -37,6 +37,9 @@
   'shift-cmd-d': 'find-and-replace:select-undo'
   'cmd--': 'editor:toggle-line-comments'
 
+'.platform-linux atom-workspace atom-text-editor:not([mini])':
+  'ctrl-0': 'tree-view:toggle-focus'
+
 '.platform-linux atom-text-editor':
   'ctrl-tab ^ctrl': 'unset!'
   'ctrl-shift-tab ^ctrl': 'unset!'
@@ -48,3 +51,5 @@
   'alt-shift-x': 'editor:delete-line'
   'ctrl-shift-d': 'find-and-replace:select-undo'
   'alt-ctrl-down': 'editor:duplicate-lines'
+  'alt-down': 'editor:move-line-down'
+  'alt-up': 'editor:move-line-up'

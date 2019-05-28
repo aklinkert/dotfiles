@@ -20,7 +20,7 @@ function kube-watch-all-without-kube-system {
 
 function kube-watch-all-without {
   local interval="${KUBE_WATCH_INTERVAL:-1}"
-  local cmdLine="kubectl get pods -o wide --all-namespaces ${filters}"
+  local cmdLine="kubectl get pods --all-namespaces ${filters}"
 
   for filter in "$@"; do
     cmdLine="${cmdLine} | grep -v \"${filter}\""

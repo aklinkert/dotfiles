@@ -98,9 +98,10 @@ function gobuild-linux {
 }
 
 function http-server {
+    PORT="${PORT:-8080}"
     docker rm http-server || true
-    echo "Server listening on http://localhost:8080 "
-    docker run --name http-server -it -p 8080:80  -v "$(pwd):/usr/share/nginx/html:ro" nginx:alpine
+    echo "Server listening on http://localhost:${PORT} "
+    docker run --name http-server -it -p "${PORT}:80"  -v "$(pwd):/usr/share/nginx/html:ro" nginx:alpine
 }
 
 function uuid-and-copy {

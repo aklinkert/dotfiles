@@ -1,7 +1,7 @@
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
-export GOPATH=~/go:~
+export GOPATH=~/go
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$HOME/go/bin:$PATH
 
 alias ll="ls -alh"
@@ -31,6 +31,13 @@ alias first_col="awk '{ print \$1 }'"
 alias second_col="awk '{ print \$2 }'"
 alias third_col="awk '{ print \$3 }'"
 alias cobra-init="GOPATH=$HOME cobra init ."
+alias k="kubectl"
+alias tf="terraform"
+alias please="sudo"
+
+for f in $HOME/dotfiles/customers/*; do
+  source $f
+done
 
 source ~/functions.sh
 source ~/liquidprompt
@@ -39,7 +46,6 @@ source ~/liquidprompt
 if [ -f "/usr/local/opt/nvm/nvm.sh" ]; then
     source "/usr/local/opt/nvm/nvm.sh"
 fi
-
 
 [ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
 [ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion

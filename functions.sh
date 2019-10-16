@@ -149,3 +149,8 @@ function reverse-rename-files {
 
   find . -iname "*${search}*" -exec rename "s/${search}/${replace}/" '{}' \;
 }
+
+function go-cover {
+	go test -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out
+}

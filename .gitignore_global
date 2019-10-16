@@ -9,4 +9,4 @@ npm-debug.log
 tmp.sh
 tmp.*.sh*
 *.tmp.*
-
+coverage.out

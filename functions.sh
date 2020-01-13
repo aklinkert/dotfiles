@@ -154,3 +154,9 @@ function go-cover {
 	go test -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out
 }
+
+function split-images-raw {
+	mkdir JPG RAW
+	mv *.JPG JPG/
+	 mv *ARW RAW/
+}

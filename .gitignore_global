@@ -7,6 +7,6 @@ node_modules
 npm-debug.log
 .envrc
 tmp.sh
-tmp.*.sh*
+tmp.*.*
 *.tmp.*
 coverage.out

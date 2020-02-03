@@ -3,6 +3,7 @@ export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
 export GOPATH=~/go
 export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$HOME/go/bin:$PATH
+export LC_ALL=en_US.UTF-8
 
 alias ll="ls -alh"
 alias ga="git add"

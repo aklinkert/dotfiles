@@ -1,6 +1,7 @@
 [user]
 	name = Alexander Pinnecke
-	email = alexander.pinnecke@googlemail.com
+	email = alex@klinkert.io
+	signingkey = A6B8DB66FE20F22B
 [push]
 	default = simple
 	followTags = true
@@ -33,3 +34,5 @@
 [mergetool "meld"]
 	trustExitCode = true
 	cmd = open -W -a Meld --args --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output=\"$MERGED\"
+[commit]
+	gpgsign = true

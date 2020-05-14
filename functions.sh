@@ -160,3 +160,13 @@ function split-images-raw {
 	mv *.JPG JPG/
 	 mv *ARW RAW/
 }
+
+function random-string {
+	if [ -z "$1" ]; then
+		echoc red "No length given"
+	fi
+
+	cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w "${1}" | head -n 1 | tr -d '\n'
+}
+
+

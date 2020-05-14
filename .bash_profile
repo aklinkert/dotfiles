@@ -1,23 +1,25 @@
+export PATH=~/bin:/usr/local/bin:$HOME/go/bin:$PATH
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
 export GOPATH=~/go
-export PATH=~/bin:/usr/local/sbin:/usr/local/etc:/usr/local/bin:$HOME/go/bin:$PATH
 export LC_ALL=en_US.UTF-8
 
+alias dc="docker-compose"
 alias ll="ls -alh"
 alias ga="git add"
 alias gaa="git add --all :/"
 alias grc="gaa; git rebase --continue"
-alias gcm="git commit -m"
-alias gca="git commit --amend"
-alias gcan="git commit --amend --no-edit"
+alias gcm="git commit -sS -m"
+alias gca="git commit -sS --amend"
+alias gcan="git commit -sS --amend --no-edit"
 alias gpr="git pull-request"
 alias grom="git rebase origin/master"
 alias grod="git rebase origin/develop"
 alias gpo="git push origin"
 alias gp="git pull --rebase"
 alias gpp="gp && gpo"
+alias gd="git diff"
 alias gds="git diff --staged"
 alias gs="git status"
 alias gsa="git stash save"
@@ -38,6 +40,7 @@ alias cobra-init="GOPATH=$HOME cobra init ."
 alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
+alias brew-update="brew update && brew upgrade && brew cleanup"
 
 for f in $HOME/dotfiles/customers/*; do
   source $f

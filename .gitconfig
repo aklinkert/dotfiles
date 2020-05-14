@@ -36,3 +36,5 @@
 	cmd = open -W -a Meld --args --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output=\"$MERGED\"
 [commit]
 	gpgsign = true
+[credential]
+	helper = store

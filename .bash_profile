@@ -18,7 +18,7 @@ alias grom="git rebase origin/master"
 alias grod="git rebase origin/develop"
 alias gpo="git push origin"
 alias gp="git pull --rebase"
-alias gpp="gp && gpo"
+alias gpp="gp ; gpo"
 alias gd="git diff"
 alias gds="git diff --staged"
 alias gs="git status"
@@ -42,13 +42,12 @@ alias tf="terraform"
 alias please="sudo"
 alias brew-update="brew update && brew upgrade && brew cleanup"
 
-for f in $HOME/dotfiles/customers/*; do
-  source $f
-done
-
 source ~/functions.sh
 source ~/liquidprompt
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && source "/usr/local/etc/profile.d/bash_completion.sh"
+
+if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then 
+    source "/usr/local/etc/profile.d/bash_completion.sh"
+fi
 
 if [ -f "/usr/local/opt/nvm/nvm.sh" ]; then
     source "/usr/local/opt/nvm/nvm.sh"
@@ -58,5 +57,15 @@ fi
 [ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion
 
 eval "$(direnv hook bash)"
-eval "$(thefuck --alias)"
+
+export THEFUCK_REQUIRE_CONFIRMATION=false
+eval $(thefuck --alias)
+eval $(thefuck --alias FUCK)
+
 source <(kubectl completion bash)
+
+for f in $HOME/dotfiles/customers/*; do
+    echoc blue "Including customer config for ${f}"
+    source $f
+done
+

@@ -51,6 +51,17 @@ function kube-port-forward {
     eval ${command}
 }
 
+function kube-scale-all {
+    local namespace="$1"
+    local replicas="$2"
+    if [ "${replicas}" == "" ]; then
+        echo "Usage: kube-scale-all <namespace> <replicas>"
+        return
+    fi
+
+    kubectl get --no-headers deploy | first_col | xargs kubectl scale --replicas="${replicas}" deployment
+}
+
 function docker-clean-images {
     docker images -f dangling=true -q | xargs docker rmi -f
 }
@@ -169,4 +180,15 @@ function random-string {
 	cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w "${1}" | head -n 1 | tr -d '\n'
 }
 
-
+function restart-until-stopped {
+  echoc blue "Executing command until stopped:"
+  echoc blue "$*"
+  while true; do
+    $@
+    exitcode=$?
+    echo "Exit code: $exitcode"
+    test $exitcode -gt 128 && break
+    test $exitcode -eq 0 && break
+    sleep 1
+  done
+}

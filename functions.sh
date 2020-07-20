@@ -188,7 +188,6 @@ function restart-until-stopped {
     exitcode=$?
     echo "Exit code: $exitcode"
     test $exitcode -gt 128 && break
-    test $exitcode -eq 0 && break
     sleep 1
   done
 }

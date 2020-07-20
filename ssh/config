@@ -2,4 +2,3 @@ Host *
 	ForwardAgent yes
 	StrictHostKeyChecking no
 	CheckHostIP no
-	UseKeychain yes

@@ -4,6 +4,7 @@ export NVM_DIR=~/.nvm
 export GIT_MERGE_AUTOEDIT=no
 export GOPATH=~/go
 export LC_ALL=en_US.UTF-8
+export GPG_TTY=$(tty)
 
 alias dc="docker-compose"
 alias ll="ls -alh"
@@ -45,7 +46,7 @@ alias brew-update="brew update && brew upgrade && brew cleanup"
 source ~/functions.sh
 source ~/liquidprompt
 
-if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then 
+if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then
     source "/usr/local/etc/profile.d/bash_completion.sh"
 fi
 
@@ -68,4 +69,3 @@ for f in $HOME/dotfiles/customers/*; do
     echoc blue "Including customer config for ${f}"
     source $f
 done
-

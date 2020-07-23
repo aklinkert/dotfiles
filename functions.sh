@@ -191,3 +191,15 @@ function restart-until-stopped {
     sleep 1
   done
 }
+
+function fix-owner {
+  if [ "${1}" == "" ]; then echo "Please pass a chown target"; return; fi
+
+  echoc blue "Updating $1 to be owned by ${USER}:${USER}"
+
+  sudo chown -R "${USER}:${USER}" "${1}"
+}
+
+function date-iso {
+  date '+%F-%H-%M-%S'
+}

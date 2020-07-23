@@ -5,6 +5,7 @@ export GIT_MERGE_AUTOEDIT=no
 export GOPATH=~/go
 export LC_ALL=en_US.UTF-8
 export GPG_TTY=$(tty)
+export EDITOR="/usr/bin/vim"
 
 alias dc="docker-compose"
 alias ll="ls -alh"
@@ -64,6 +65,15 @@ eval $(thefuck --alias)
 eval $(thefuck --alias FUCK)
 
 source <(kubectl completion bash)
+
+# consuming OS specific configuration/function files
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  echoc green "Running on linux"
+  source "${HOME}/dotfiles/linux.sh"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  echoc green "Running on darwin"
+  source "${HOME}/dotfiles/darwin.sh"
+fi
 
 for f in $HOME/dotfiles/customers/*; do
     echoc blue "Including customer config for ${f}"

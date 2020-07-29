@@ -44,28 +44,6 @@ alias tf="terraform"
 alias please="sudo"
 alias brew-update="brew update && brew upgrade && brew cleanup"
 
-source ~/functions.sh
-source ~/liquidprompt
-
-if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then
-    source "/usr/local/etc/profile.d/bash_completion.sh"
-fi
-
-if [ -f "/usr/local/opt/nvm/nvm.sh" ]; then
-    source "/usr/local/opt/nvm/nvm.sh"
-fi
-
-[ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
-[ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion
-
-eval "$(direnv hook bash)"
-
-export THEFUCK_REQUIRE_CONFIRMATION=false
-eval $(thefuck --alias)
-eval $(thefuck --alias FUCK)
-
-source <(kubectl completion bash)
-
 # consuming OS specific configuration/function files
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
   echoc green "Running on linux"
@@ -74,6 +52,20 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
   echoc green "Running on darwin"
   source "${HOME}/dotfiles/darwin.sh"
 fi
+
+source ~/functions.sh
+source ~/liquidprompt
+
+[ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
+
+
+eval "$(direnv hook bash)"
+
+export THEFUCK_REQUIRE_CONFIRMATION=false
+eval $(thefuck --alias)
+eval $(thefuck --alias FUCK)
+
+source <(kubectl completion bash)
 
 for f in $HOME/dotfiles/customers/*; do
     echoc blue "Including customer config for ${f}"

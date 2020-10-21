@@ -59,7 +59,7 @@ function kube-scale-all {
         return
     fi
 
-    kubectl get --no-headers deploy | first_col | xargs kubectl scale --replicas="${replicas}" deployment
+    kubectl get -n "${namespace}" --no-headers deploy | first_col | xargs kubectl -n "${namespace}" scale --replicas="${replicas}" deployment
 }
 
 function docker-clean-images {

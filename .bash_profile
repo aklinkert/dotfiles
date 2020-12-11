@@ -46,10 +46,8 @@ alias brew-update="brew update && brew upgrade && brew cleanup"
 
 # consuming OS specific configuration/function files
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  echoc green "Running on linux"
   source "${HOME}/dotfiles/linux.sh"
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-  echoc green "Running on darwin"
   source "${HOME}/dotfiles/darwin.sh"
 fi
 
@@ -71,3 +69,4 @@ for f in $HOME/dotfiles/customers/*; do
     echoc blue "Including customer config for ${f}"
     source $f
 done
+eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)

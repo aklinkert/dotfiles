@@ -43,6 +43,7 @@ alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
 alias brew-update="brew update && brew upgrade && brew cleanup"
+alias go-vendors="go mod download && go mod tidy"
 
 # consuming OS specific configuration/function files
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -53,9 +54,6 @@ fi
 
 source ~/functions.sh
 source ~/liquidprompt
-
-[ -f "$HOME/.tokens" ] && source "$HOME/.tokens"
-
 
 eval "$(direnv hook bash)"
 
@@ -69,4 +67,3 @@ for f in $HOME/dotfiles/customers/*; do
     echoc blue "Including customer config for ${f}"
     source $f
 done
-eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)

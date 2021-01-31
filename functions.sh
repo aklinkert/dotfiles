@@ -203,3 +203,7 @@ function fix-owner {
 function date-iso {
   date '+%F-%H-%M-%S'
 }
+
+function go-thanks {
+  docker run -it --rm -v $(pwd):/home -e "GITHUB_TOKEN=${GO_THANKS_GITHUB_TOKEN}" psampaz/gothanks:latest
+}

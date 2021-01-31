@@ -40,3 +40,5 @@
 	helper = store
 [pull]
 	rebase = true
+[pull]
+	ff = only

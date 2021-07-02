@@ -204,6 +204,26 @@ function date-iso {
   date '+%F-%H-%M-%S'
 }
 
+function export-dotenv-file {
+	source "${1}"
+	export $(cat "${1}" | grep "=" | cut -d= -f1)
+}
+
+set_git_author() {
+  local email="$1" name="$2"
+
+  if [[ -z "$email" ]] || [[ -z "$name" ]]; then
+    >&2 echo "Couldn't set git author!"
+    return 1
+  fi
+
+  export GIT_COMMITTER_NAME="$name"
+  export GIT_COMMITTER_EMAIL="$email"
+  export GIT_AUTHOR_NAME="$name"
+  export GIT_AUTHOR_EMAIL="$email"
+  export GIT_COMMIT_GPG_KEY_ID="$email"
+}
+
 function go-thanks {
   docker run -it --rm -v $(pwd):/home -e "GITHUB_TOKEN=${GO_THANKS_GITHUB_TOKEN}" psampaz/gothanks:latest
 }

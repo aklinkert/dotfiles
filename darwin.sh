@@ -1,5 +1,3 @@
-[ -f /usr/local/etc/bash_completion ] && source /usr/local/etc/bash_completion
-
 if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then
     source "/usr/local/etc/profile.d/bash_completion.sh"
 fi

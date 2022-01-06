@@ -1,3 +1,7 @@
+ssh-add -K
+
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 export PATH=~/bin:/usr/local/bin:$HOME/go/bin:$HOME/bin:$PATH
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
@@ -16,7 +20,7 @@ alias gcm="git commit -s -S ${GIT_COMMIT_GPG_KEY_ID:-} -m"
 alias gca="git commit -s -S ${GIT_COMMIT_GPG_KEY_ID:-} --amend"
 alias gcan="git commit -s -S ${GIT_COMMIT_GPG_KEY_ID:-} --amend --no-edit"
 alias gpr="git pull-request"
-alias grom="git rebase origin/master"
+alias grom="git rebase origin/main"
 alias grod="git rebase origin/develop"
 alias gpo="git push origin"
 alias gp="git pull --rebase"
@@ -44,6 +48,10 @@ alias tf="terraform"
 alias please="sudo"
 alias brew-update="brew update && brew upgrade && brew cleanup"
 alias go-vendors="go mod download && go mod tidy"
+
+alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+alias art="php artisan"
+alias sart="sail artisan"
 
 # consuming OS specific configuration/function files
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then

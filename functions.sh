@@ -149,12 +149,12 @@ function echoc {
     tput sgr0
 }
 
-function reverse-rename-files {
+function rename-files-recursive {
   local search=$1
   local replace=$2
 
   if [ -z "$1" ] || [ -z "$2" ]; then
-      echo "Usage: reverse-rename-files <search> <replace>"
+      echo "Usage: rename-files-recursive <search> <replace>"
       return
   fi
 

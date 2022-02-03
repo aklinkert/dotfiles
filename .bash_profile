@@ -1,17 +1,15 @@
-ssh-add -K
+export PATH=~/bin:/usr/local/bin:$HOME/go/bin:$HOME/bin:$PATH:${HOME}/.krew/bin
 
-export BASH_SILENCE_DEPRECATION_WARNING=1
-
-export PATH=~/bin:/usr/local/bin:$HOME/go/bin:$HOME/bin:$PATH
 export NODE_ENV=development
 export NVM_DIR=~/.nvm
-export GIT_MERGE_AUTOEDIT=no
 export GOPATH=~/go
+
+export GIT_MERGE_AUTOEDIT=no
 export LC_ALL=en_US.UTF-8
+
 export GPG_TTY=$(tty)
 export EDITOR="/usr/bin/vim"
 
-alias dc="docker-compose"
 alias ll="ls -alh"
 alias ga="git add"
 alias gaa="git add --all :/"
@@ -43,15 +41,12 @@ alias remove_first_line="tail -n +2"
 alias second_col="awk '{ print \$2 }'"
 alias third_col="awk '{ print \$3 }'"
 alias cobra-init="GOPATH=$HOME cobra init ."
+alias dc="docker-compose"
 alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
 alias brew-update="brew update && brew upgrade && brew cleanup"
 alias go-vendors="go mod download && go mod tidy"
-
-alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
-alias art="php artisan"
-alias sart="sail artisan"
 
 # consuming OS specific configuration/function files
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then

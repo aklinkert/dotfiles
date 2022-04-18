@@ -195,7 +195,7 @@ function restart-until-stopped {
 function fix-owner {
   if [ "${1}" == "" ]; then echo "Please pass a chown target"; return; fi
 
-  echoc blue "Updating $1 to be owned by ${USER}:${USER}"
+  echoc blue "Updating ${1} to be owned by ${USER}:${USER}"
 
   sudo chown -R "${USER}:${USER}" "${1}"
 }
@@ -209,7 +209,7 @@ function export-dotenv-file {
 	export $(cat "${1}" | grep "=" | cut -d= -f1)
 }
 
-set_git_author() {
+function set_git_author {
   local email="$1" name="$2"
 
   if [[ -z "$email" ]] || [[ -z "$name" ]]; then
@@ -222,8 +222,4 @@ set_git_author() {
   export GIT_AUTHOR_NAME="$name"
   export GIT_AUTHOR_EMAIL="$email"
   export GIT_COMMIT_GPG_KEY_ID="$email"
-}
-
-function go-thanks {
-  docker run -it --rm -v $(pwd):/home -e "GITHUB_TOKEN=${GO_THANKS_GITHUB_TOKEN}" psampaz/gothanks:latest
 }

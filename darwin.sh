@@ -1,4 +1,4 @@
-ssh-add -K
+ssh-add --apple-use-keychain --apple-load-keychain
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
 

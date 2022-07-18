@@ -46,6 +46,7 @@ alias dc="docker-compose"
 alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
+
 alias brew-update="brew update && brew upgrade && brew cleanup"
 alias go-vendors="go mod download && go mod tidy"
 
@@ -71,3 +72,8 @@ for f in $HOME/dotfiles/customers/*; do
     echoc blue "Including customer config for ${f}"
     source $f
 done
+
+# BEGIN SNIPPET: Platform.sh CLI configuration
+HOME=${HOME:-'/Users/alex'}
+export PATH="$HOME/"'.platformsh/bin':"$PATH"
+if [ -f "$HOME/"'.platformsh/shell-config.rc' ]; then . "$HOME/"'.platformsh/shell-config.rc'; fi # END SNIPPET

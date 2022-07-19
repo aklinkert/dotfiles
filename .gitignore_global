@@ -11,3 +11,5 @@ tmp.sh
 tmp.*.*
 *.tmp.*
 coverage.out
+tmp
+temp

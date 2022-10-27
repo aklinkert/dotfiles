@@ -8,7 +8,9 @@ export GIT_MERGE_AUTOEDIT=no
 export LC_ALL=en_US.UTF-8
 
 export GPG_TTY=$(tty)
-export EDITOR="/usr/bin/vim"
+# export EDITOR="/usr/bin/vim"
+export EDITOR="code -w"
+export DC="docker-compose"
 
 alias ll="ls -alh"
 alias ga="git add"
@@ -29,20 +31,19 @@ alias grs="git restore --staged ."
 alias gs="git status"
 alias gsa="git stash save"
 alias gsp="git stash pop"
-alias gf="git fetch --prune && git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d"
+alias gf="git fetch --prune && git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d; git branch -vv | grep ': gone]' | grep -v '\*' | awk '{ print \$1; }' | xargs -r git branch -D"
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
 alias gfrs="git flow release start"
 alias gfrf="git flow release finish"
 alias gfhs="git flow hotfix start"
 alias gfhf="git flow hotfix finish"
-alias git="hub"
 alias dns="sudo killall -HUP mDNSResponder"
 alias first_col="awk '{ print \$1 }'"
 alias remove_first_line="tail -n +2"
 alias second_col="awk '{ print \$2 }'"
 alias third_col="awk '{ print \$3 }'"
 alias cobra-init="GOPATH=$HOME cobra init ."
-alias dc="docker-compose"
+alias dc='eval "$DC"'
 alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
@@ -65,6 +66,7 @@ eval "$(direnv hook bash)"
 export THEFUCK_REQUIRE_CONFIRMATION=false
 eval $(thefuck --alias)
 eval $(thefuck --alias FUCK)
+alias f="fuck"
 
 source <(kubectl completion bash)
 

@@ -1,15 +1,21 @@
+export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
+
 ssh-add --apple-use-keychain --apple-load-keychain
 
-alias colima-start="colima start --cpu 5 --memory 8 --dns 1.1.1.1"
+colima_start="colima start --cpu 5 --memory 16 --dns 8.8.8.8 --dns 8.8.4.4 --dns 1.1.1.1 --dns 1.0.0.1 --disk 120"
+alias colima-start="${colima_start} --arch aarch64"
+alias colima-start-x86="${colima_start} --arch x86_64"
+export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
+alias colima-htop="colima ssh -- sudo apk add htop ; colima ssh -- htop"
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-if [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]]; then
-    source "/usr/local/etc/profile.d/bash_completion.sh"
+if [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]]; then
+    source "/opt/homebrew/etc/profile.d/bash_completion.sh"
 fi
 
-if [ -f "/usr/local/opt/nvm/nvm.sh" ]; then
-    source "/usr/local/opt/nvm/nvm.sh"
+if [ -f "/opt/homebrew/opt/nvm/nvm.sh" ]; then
+    source "/opt/homebrew/opt/nvm/nvm.sh"
 fi
 
 function cleanup-caches {

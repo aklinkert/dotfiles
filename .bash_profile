@@ -59,7 +59,10 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 source ~/functions.sh
-source ~/liquidprompt
+
+export LP_PS1
+# Only load Liquidprompt in interactive shells, not from a script or from scp
+[[ $- = *i* ]] && source ~/dotfiles/liquidprompt/liquidprompt
 
 eval "$(direnv hook bash)"
 

@@ -38,6 +38,8 @@
 	gpgsign = true
 [credential]
 	helper = store
+[push]
+	autoSetupRemote = true
 [pull]
 	rebase = true
 [pull]

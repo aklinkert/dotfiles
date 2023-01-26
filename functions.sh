@@ -223,3 +223,7 @@ function set_git_author {
   export GIT_AUTHOR_EMAIL="$email"
   export GIT_COMMIT_GPG_KEY_ID="$email"
 }
+
+function aws-login {
+  aws sso login --no-browser | grep user_code | pbcopy
+}

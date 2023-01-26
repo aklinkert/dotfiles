@@ -3,9 +3,9 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH:$HOME/Library/Applicatio
 ssh-add --apple-use-keychain --apple-load-keychain
 
 #  --dns 8.8.8.8 --dns 8.8.4.4 --dns 1.1.1.1 --dns 1.0.0.1
-colima_start="colima start --cpu 5 --memory 16 --disk 120 --runtime docker"
+colima_start="colima start --cpu 5 --memory 16 --disk 250 --runtime docker --dns 1.1.1.1"
 alias colima-start="${colima_start} --arch aarch64"
-alias colima-start-with-kubernetes="${colima_start} --arch x86_64 --kubernetes"
+alias colima-start-x86="${colima_start} --arch x86_64"
 
 export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
 alias colima-htop="colima ssh -- sudo apk add htop ; colima ssh -- htop"

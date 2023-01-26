@@ -22,6 +22,7 @@ alias gcan="git commit -s -S ${GIT_COMMIT_GPG_KEY_ID:-} --amend --no-edit"
 alias gpr="git pull-request"
 alias grom="git rebase origin/main"
 alias grod="git rebase origin/dev"
+alias gron="git rebase origin/next"
 alias gpo="git push origin"
 alias gp="git pull --rebase"
 alias gpp="gp ; gpo"
@@ -33,10 +34,8 @@ alias gsa="git stash save"
 alias gsp="git stash pop"
 alias gf="git fetch --prune && git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d; git branch -vv | grep ': gone]' | grep -v '\*' | awk '{ print \$1; }' | xargs -r git branch -D"
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
-alias gfrs="git flow release start"
-alias gfrf="git flow release finish"
-alias gfhs="git flow hotfix start"
-alias gfhf="git flow hotfix finish"
+alias gurd="git checkout dev && gp && git checkout - && grod"
+alias gurn="git checkout next && gp && git checkout - && gron"
 alias dns="sudo killall -HUP mDNSResponder"
 alias first_col="awk '{ print \$1 }'"
 alias remove_first_line="tail -n +2"
@@ -60,6 +59,9 @@ fi
 
 source ~/functions.sh
 
+export LP_MARK_PREFIX=$'\n'
+export LP_ENABLE_AWS_PROFILE=0
+export LP_ENABLE_KUBECONTEXT=1
 export LP_PS1
 # Only load Liquidprompt in interactive shells, not from a script or from scp
 [[ $- = *i* ]] && source ~/dotfiles/liquidprompt/liquidprompt
@@ -82,3 +84,7 @@ done
 HOME=${HOME:-'/Users/alex'}
 export PATH="$HOME/"'.platformsh/bin':"$PATH"
 if [ -f "$HOME/"'.platformsh/shell-config.rc' ]; then . "$HOME/"'.platformsh/shell-config.rc'; fi # END SNIPPET
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)

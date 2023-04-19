@@ -48,3 +48,5 @@
 	defaultBranch = main
 [checkout]
 	defaultRemote = origin
+[advice]
+	skippedCherryPicks = false

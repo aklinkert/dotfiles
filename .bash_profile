@@ -63,6 +63,7 @@ export LP_MARK_PREFIX=$'\n'
 export LP_ENABLE_AWS_PROFILE=0
 export LP_ENABLE_KUBECONTEXT=1
 export LP_PS1
+
 # Only load Liquidprompt in interactive shells, not from a script or from scp
 [[ $- = *i* ]] && source ~/dotfiles/liquidprompt/liquidprompt
 
@@ -88,3 +89,6 @@ if [ -f "$HOME/"'.platformsh/shell-config.rc' ]; then . "$HOME/"'.platformsh/she
 
 # Load Angular CLI autocompletion.
 source <(ng completion script)
+
+test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+

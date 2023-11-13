@@ -4,3 +4,4 @@ Host *
 	ForwardAgent yes
 	StrictHostKeyChecking no
 	CheckHostIP no
+	UserKnownHostsFile /dev/null

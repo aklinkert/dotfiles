@@ -16,6 +16,11 @@ if [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]]; then
     source "/opt/homebrew/etc/profile.d/bash_completion.sh"
 fi
 
+if [ -d "/opt/homebrew/opt/ruby/bin" ]; then
+  export PATH=/opt/homebrew/opt/ruby/bin:$PATH
+  export PATH=`gem environment gemdir`/bin:$PATH
+fi
+
 if [ -f "/opt/homebrew/opt/nvm/nvm.sh" ]; then
     source "/opt/homebrew/opt/nvm/nvm.sh"
 fi

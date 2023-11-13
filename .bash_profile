@@ -12,7 +12,9 @@ export GPG_TTY=$(tty)
 export EDITOR="code -w"
 export DC="docker-compose"
 
-alias ll="ls -alh"
+# alias ll="ls -alh"
+alias ll="exa -l --git --all --long --header"
+
 alias ga="git add"
 alias gaa="git add --all :/"
 alias grc="gaa; git rebase --continue"
@@ -59,7 +61,7 @@ fi
 
 source ~/functions.sh
 
-export LP_MARK_PREFIX=$'\n'
+# export LP_MARK_PREFIX=$'\n'
 export LP_ENABLE_AWS_PROFILE=0
 export LP_ENABLE_KUBECONTEXT=1
 export LP_PS1
@@ -86,9 +88,4 @@ HOME=${HOME:-'/Users/alex'}
 export PATH="$HOME/"'.platformsh/bin':"$PATH"
 if [ -f "$HOME/"'.platformsh/shell-config.rc' ]; then . "$HOME/"'.platformsh/shell-config.rc'; fi # END SNIPPET
 
-
-# Load Angular CLI autocompletion.
-source <(ng completion script)
-
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
-

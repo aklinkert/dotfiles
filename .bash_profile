@@ -6,6 +6,7 @@ export GOPATH=~/go
 
 export GIT_MERGE_AUTOEDIT=no
 export LC_ALL=en_US.UTF-8
+export LP_ENABLE_TITLE=1
 
 export GPG_TTY=$(tty)
 # export EDITOR="/usr/bin/vim"
@@ -89,3 +90,5 @@ export PATH="$HOME/"'.platformsh/bin':"$PATH"
 if [ -f "$HOME/"'.platformsh/shell-config.rc' ]; then . "$HOME/"'.platformsh/shell-config.rc'; fi # END SNIPPET
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+
+lp_title "${PROJECT_PREFIX:-NO_PROJECT!} - `basename $(pwd)`"

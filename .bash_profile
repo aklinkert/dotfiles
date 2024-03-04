@@ -5,11 +5,8 @@ export NVM_DIR=~/.nvm
 export GOPATH=~/go
 
 export GIT_MERGE_AUTOEDIT=no
-export LC_ALL=en_US.UTF-8
-export LP_ENABLE_TITLE=1
 
 export GPG_TTY=$(tty)
-# export EDITOR="/usr/bin/vim"
 export EDITOR="code -w"
 export DC="docker-compose"
 
@@ -44,11 +41,11 @@ alias first_col="awk '{ print \$1 }'"
 alias remove_first_line="tail -n +2"
 alias second_col="awk '{ print \$2 }'"
 alias third_col="awk '{ print \$3 }'"
-alias cobra-init="GOPATH=$HOME cobra init ."
 alias dc='eval "$DC"'
 alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
+alias aws-login="aws sso login --no-browser"
 
 alias brew-update="brew update && brew upgrade && brew cleanup"
 alias go-vendors="go mod download && go mod tidy"
@@ -62,9 +59,11 @@ fi
 
 source ~/functions.sh
 
+export LC_ALL=en_US.UTF-8
+export LP_ENABLE_TITLE=1
 # export LP_MARK_PREFIX=$'\n'
 export LP_ENABLE_AWS_PROFILE=0
-export LP_ENABLE_KUBECONTEXT=1
+export LP_ENABLE_KUBECONTEXT=0
 export LP_PS1
 
 # Only load Liquidprompt in interactive shells, not from a script or from scp
@@ -87,7 +86,8 @@ done
 # BEGIN SNIPPET: Platform.sh CLI configuration
 HOME=${HOME:-'/Users/alex'}
 export PATH="$HOME/"'.platformsh/bin':"$PATH"
-if [ -f "$HOME/"'.platformsh/shell-config.rc' ]; then . "$HOME/"'.platformsh/shell-config.rc'; fi # END SNIPPET
+if [ -f "$HOME/"'.platformsh/shell-config.rc' ]; then . "$HOME/"'.platformsh/shell-config.rc'; fi
+# END SNIPPET
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 

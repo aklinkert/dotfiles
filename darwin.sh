@@ -25,6 +25,10 @@ if [ -f "/opt/homebrew/opt/nvm/nvm.sh" ]; then
     source "/opt/homebrew/opt/nvm/nvm.sh"
 fi
 
+if [ -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]; then
+    source "/opt/homebrew/opt/asdf/libexec/asdf.sh"
+fi
+
 function cleanup-caches {
   # Source: https://github.com/paulaime/CleanUpMac/blob/master/cleanup
 

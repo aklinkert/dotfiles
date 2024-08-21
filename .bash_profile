@@ -36,7 +36,6 @@ alias gf="git fetch --prune && git branch --merged | grep -v \"\*\" | xargs -n 1
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
 alias gurd="git checkout dev && gp && git checkout - && grod"
 alias gurn="git checkout next && gp && git checkout - && gron"
-alias dns="sudo killall -HUP mDNSResponder"
 alias first_col="awk '{ print \$1 }'"
 alias remove_first_line="tail -n +2"
 alias second_col="awk '{ print \$2 }'"
@@ -46,8 +45,6 @@ alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
 alias aws-login="aws sso login --no-browser"
-
-alias brew-update="brew update && brew upgrade && brew cleanup"
 alias go-vendors="go mod download && go mod tidy"
 
 # consuming OS specific configuration/function files

@@ -2,6 +2,9 @@ export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH:$HOME/Library/Applicatio
 
 ssh-add --apple-use-keychain --apple-load-keychain
 
+alias dns="sudo killall -HUP mDNSResponder"
+alias brew-update="brew update ; brew upgrade ; brew cleanup"
+
 #  --dns 8.8.8.8 --dns 8.8.4.4 --dns 9.9.9.9 --dns 1.0.0.1
 colima_start="colima start --cpu 5 --memory 16 --disk 250 --runtime docker --dns 9.9.9.9"
 alias colima-start="${colima_start} --arch aarch64"

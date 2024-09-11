@@ -1,7 +1,7 @@
-Include /Users/alex/.colima/ssh_config
-
 Host *
 	ForwardAgent yes
 	StrictHostKeyChecking no
 	CheckHostIP no
 	UserKnownHostsFile /dev/null
+
+Include ~/dotfiles/customers/*.ssh_config

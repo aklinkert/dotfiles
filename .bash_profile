@@ -10,8 +10,13 @@ export GPG_TTY=$(tty)
 export EDITOR="code -w"
 export DC="docker-compose"
 
-# alias ll="ls -alh"
-alias ll="exa -l --git --all --long --header"
+alias reload="source ~/.bash_profile"
+
+if [ -n "$(which eza)" ]; then
+  alias ll="eza -l --git --all --long --header"
+else
+  alias ll="ls -al"
+fi
 
 alias ga="git add"
 alias gaa="git add --all :/"
@@ -67,15 +72,9 @@ export LP_PS1
 [[ $- = *i* ]] && source ~/dotfiles/liquidprompt/liquidprompt
 
 eval "$(direnv hook bash)"
-
-export THEFUCK_REQUIRE_CONFIRMATION=false
-eval $(thefuck --alias)
-eval $(thefuck --alias FUCK)
-alias f="fuck"
-
 source <(kubectl completion bash)
 
-for f in $HOME/dotfiles/customers/*; do
+for f in "$HOME/dotfiles/customers/*.sh"; do
     echoc blue "Including customer config for ${f}"
     source $f
 done
@@ -88,4 +87,8 @@ if [ -f "$HOME/"'.platformsh/shell-config.rc' ]; then . "$HOME/"'.platformsh/she
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
-lp_title "${PROJECT_PREFIX:-NO_PROJECT!} - `basename $(pwd)`"
+if [ -n "${PROJECT_PREFIX}" ]; then
+  lp_title "${PROJECT_PREFIX} - `basename $(pwd)`"
+else
+  lp_title "`basename $(pwd)`"
+fi

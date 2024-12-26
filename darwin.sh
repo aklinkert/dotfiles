@@ -24,10 +24,6 @@ if [ -d "/opt/homebrew/opt/ruby/bin" ]; then
   export PATH=`gem environment gemdir`/bin:$PATH
 fi
 
-if [ -f "/opt/homebrew/opt/nvm/nvm.sh" ]; then
-    source "/opt/homebrew/opt/nvm/nvm.sh"
-fi
-
 if [ -f "/opt/homebrew/opt/asdf/libexec/asdf.sh" ]; then
     source "/opt/homebrew/opt/asdf/libexec/asdf.sh"
 fi

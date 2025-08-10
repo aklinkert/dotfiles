@@ -50,3 +50,5 @@
 	defaultRemote = origin
 [advice]
 	skippedCherryPicks = false
+[lfs]
+	access = basic

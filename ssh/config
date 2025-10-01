@@ -3,5 +3,7 @@ Host *
 	StrictHostKeyChecking no
 	CheckHostIP no
 	UserKnownHostsFile /dev/null
+	UseKeychain yes
+	AddKeysToAgent yes
 
 Include ~/dotfiles/customers/*.ssh_config

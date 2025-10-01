@@ -1,7 +1,3 @@
-[user]
-	name = Alex Klinkert
-	email = alex@klinkert.io
-	signingkey = A6B8DB66FE20F22B
 [push]
 	default = simple
 	followTags = true

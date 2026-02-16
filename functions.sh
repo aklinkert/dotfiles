@@ -111,7 +111,7 @@ function gobuild-linux {
 function http-server {
     PORT="${PORT:-8080}"
     docker rm http-server || true
-    echo "Server listening on http://localhost:${PORT} "
+    echo "Server listening on http://localhost:${PORT}"
     docker run --name http-server -it -p "${PORT}:80"  -v "$(pwd):/usr/share/nginx/html:ro" nginx:alpine
 }
 
@@ -209,6 +209,7 @@ function export-dotenv-file {
 	export $(cat "${1}" | grep "=" | cut -d= -f1)
 }
 
+# source: https://josh.fail/2021/using-direnv-to-set-a-custom-git-email-for-work-projects/
 function set_git_author {
   local email="$1" name="$2"
 
@@ -224,6 +225,29 @@ function set_git_author {
   export GIT_COMMIT_GPG_KEY_ID="$email"
 }
 
-function aws-login {
-  aws sso login --no-browser | grep user_code | pbcopy
+function asdf-install-plugins {
+    # Read the .tool-versions file
+    while read -r line; do
+        # Extract the tool name
+        tool=$(echo $line | awk '{print $1}')
+
+        # Update the tool to the latest version
+        asdf plugin add $tool
+    done < .tool-versions
+
+    echo "All plugins have been installed."
+}
+
+function asdf-update-tools {
+    # Read the .tool-versions file
+    while read -r line; do
+        # Extract the tool name
+        tool=$(echo $line | awk '{print $1}')
+
+        # Update the tool to the latest version
+        asdf install $tool latest
+        asdf set $tool latest
+    done < .tool-versions
+
+    echo "All tools have been updated to their latest versions."
 }

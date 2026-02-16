@@ -8,7 +8,6 @@ export GIT_MERGE_AUTOEDIT=no
 
 export GPG_TTY=$(tty)
 export EDITOR="code -w"
-export DC="docker compose"
 
 alias reload="source ~/.bash_profile"
 
@@ -21,9 +20,9 @@ fi
 alias ga="git add"
 alias gaa="git add --all :/"
 alias grc="gaa; git rebase --continue"
-alias gcm="git commit -s -S ${GIT_COMMIT_GPG_KEY_ID:-} -m"
-alias gca="git commit -s -S ${GIT_COMMIT_GPG_KEY_ID:-} --amend"
-alias gcan="git commit -s -S ${GIT_COMMIT_GPG_KEY_ID:-} --amend --no-edit"
+alias gcm="git commit -s -S -m"
+alias gca="git commit -s -S --amend"
+alias gcan="git commit -s -S --amend --no-edit"
 alias gpr="git pull-request"
 alias gpo="git push origin"
 alias gp="git pull --rebase"
@@ -48,12 +47,11 @@ alias first_col="awk '{ print \$1 }'"
 alias remove_first_line="tail -n +2"
 alias second_col="awk '{ print \$2 }'"
 alias third_col="awk '{ print \$3 }'"
-alias dc='eval "$DC"'
 alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
-alias aws-login="aws sso login --no-browser"
 alias go-vendors="go mod download && go mod tidy"
+alias dc="docker compose"
 
 source ~/functions.sh
 
@@ -72,17 +70,21 @@ export LP_ENABLE_KUBECONTEXT=0
 export LP_PS1
 
 # Only load Liquidprompt in interactive shells, not from a script or from scp
-[[ $- = *i* ]] && source ~/dotfiles/liquidprompt/liquidprompt
+if [[ $- = *i* ]]; then
+  source ~/dotfiles/liquidprompt/liquidprompt
+
+  if [[ $(type -t lp_title) == function ]]; then
+    if [ -n "${PROJECT_PREFIX}" ]; then
+      lp_title "${PROJECT_PREFIX} - `basename $(pwd)`"
+    else
+      lp_title "`basename $(pwd)`"
+    fi
+  fi
+fi
 
 eval "$(direnv hook bash)"
 
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
-
-if [ -n "${PROJECT_PREFIX}" ]; then
-  lp_title "${PROJECT_PREFIX} - `basename $(pwd)`"
-else
-  lp_title "`basename $(pwd)`"
-fi
 
 if [ -n "$(which task)" ]; then
   eval "$(task --completion bash)"

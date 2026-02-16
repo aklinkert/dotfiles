@@ -11,11 +11,8 @@
 	required = true
 [hub]
 	protocol = ssh
-
 [status]
 	submoduleSummary = true
-
-
 [diff]
 	tool = meld
 [difftool]

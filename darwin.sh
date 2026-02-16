@@ -8,9 +8,15 @@ alias dns="sudo killall -HUP mDNSResponder"
 alias brew-update="brew update ; brew upgrade ; brew cleanup"
 
 #  --dns 8.8.8.8 --dns 8.8.4.4 --dns 9.9.9.9 --dns 1.0.0.1
-colima_start="colima start --ssh-config=false --cpu 5 --memory 32 --disk 250"
-alias colima-start="${colima_start} --arch aarch64"
-alias colima-start-x86="${colima_start} --arch x86_64"
+function colima-start {
+  colima start \
+    --ssh-config=false \
+    --cpu "${COLIMA_VM_CPU:-4}" \
+    --memory "${COLIMA_VM_MEMORY:-16}" \
+    --disk "${COLIMA_VM_DISK:-50}" \
+    --profile "${COLIMA_PROFILE:-default}"
+}
+
 alias colima-htop="colima ssh -- sudo apk add htop ; colima ssh -- htop"
 
 export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"

@@ -1,9 +1,10 @@
 Host *
 	ForwardAgent yes
-	StrictHostKeyChecking no
-	CheckHostIP no
-	UserKnownHostsFile /dev/null
+	# Security: Only disable strict host checking per-host as needed
+	# StrictHostKeyChecking ask is more secure than 'no'
+	# Move StrictHostKeyChecking no to customer-specific configs only where necessary
 	UseKeychain yes
 	AddKeysToAgent yes
 
+# Customer-specific configurations (may override security settings as needed)
 Include ~/dotfiles/customers/*.ssh_config

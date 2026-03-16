@@ -1,12 +1,19 @@
+# macOS-specific configuration (shell-agnostic)
+# Works with both bash and zsh
+
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
 export HOMEBREW_PREFIX="$(brew --prefix)"
 
-ssh-add --apple-use-keychain --apple-load-keychain
+# Add SSH keys to keychain (suppress errors if already added)
+ssh-add --apple-use-keychain --apple-load-keychain 2>/dev/null
 
+# macOS aliases
 alias dns="sudo killall -HUP mDNSResponder"
 alias brew-update="brew update ; brew upgrade ; brew cleanup"
+alias colima-htop="colima ssh -- sudo apk add htop ; colima ssh -- htop"
 
+# Colima start function
 function colima-start {
   colima start \
     --ssh-config=false \
@@ -18,25 +25,18 @@ function colima-start {
     --profile "${COLIMA_PROFILE:-default}"
 }
 
-alias colima-htop="colima ssh -- sudo apk add htop ; colima ssh -- htop"
-
-export DOCKER_HOST="unix://$HOME/.colima/default/docker.sock"
-
-export BASH_SILENCE_DEPRECATION_WARNING=1
-
-if [[ -r "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh" ]]; then
-  . "$HOMEBREW_PREFIX/etc/profile.d/bash_completion.sh"
-fi
- 
+# Ruby setup (if installed via Homebrew)
 if [ -d "${HOMEBREW_PREFIX}/opt/ruby/bin" ]; then
   export PATH="${HOMEBREW_PREFIX}/opt/ruby/bin:$PATH"
   export PATH="$(gem environment gemdir)/bin:$PATH"
 fi
 
+# asdf version manager
 if [ -f "${HOMEBREW_PREFIX}/opt/asdf/libexec/asdf.sh" ]; then
     . "${HOMEBREW_PREFIX}/opt/asdf/libexec/asdf.sh"
 fi
 
+# macOS-specific cleanup function
 function cleanup-caches {
   # Source: https://github.com/paulaime/CleanUpMac/blob/master/cleanup
 
@@ -66,7 +66,6 @@ function cleanup-caches {
 
   echo 'Cleanup Homebrew Cache ...'
   brew cleanup --force -s &>/dev/null
-  brew cask cleanup &>/dev/null
   rm -rfv /Library/Caches/Homebrew/* &>/dev/null
   brew tap --repair &>/dev/null
 

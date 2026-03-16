@@ -36,7 +36,7 @@ function kube-delete-pods {
 	return
     fi
 
-    kubectl get pods -n "${namespace}" | grep "${name}" | awk '{{ print $1 }}' | xargs kubectl -n "${namespace}" delete pod ${@:3}
+    kubectl get pods -n "${namespace}" | grep "${name}" | awk '{{ print $1 }}' | xargs kubectl -n "${namespace}" delete pod "${@:3}"
 }
 
 function kube-port-forward {
@@ -45,10 +45,20 @@ function kube-port-forward {
         return
     fi
 
-    local command="kubectl -n ${1} port-forward $(kubectl get pods -n $1 | grep $2 | head -n 1 | awk '{ print $1 }') ${3}"
-    echo "executing ${command}"
-
-    eval ${command}
+    local namespace="$1"
+    local deployment="$2"
+    local port="$3"
+    
+    # Get pod name safely without eval
+    local pod_name=$(kubectl get pods -n "$namespace" | grep "$deployment" | head -n 1 | awk '{ print $1 }')
+    
+    if [ -z "$pod_name" ]; then
+        echo "Error: No pod found matching deployment '$deployment' in namespace '$namespace'"
+        return 1
+    fi
+    
+    echo "Executing: kubectl -n $namespace port-forward $pod_name $port"
+    kubectl -n "$namespace" port-forward "$pod_name" "$port"
 }
 
 function kube-scale-all {
@@ -75,9 +85,9 @@ function docker-delete-images {
 }
 
 function docker-delete-all-images {
-    read -p "Are you FUCKING SURE? There is no way back! " -n 1 -r
+    read -r -p "Are you FUCKING SURE? There is no way back! " -n 1 reply
     echo    # (optional) move to a new line
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    if [[ ! $reply =~ ^[Yy]$ ]]; then
       return
     fi
 
@@ -184,7 +194,7 @@ function restart-until-stopped {
   echoc blue "Executing command until stopped:"
   echoc blue "$*"
   while true; do
-    $@
+    "$@"
     exitcode=$?
     echo "Exit code: $exitcode"
     test $exitcode -gt 128 && break
@@ -205,8 +215,27 @@ function date-iso {
 }
 
 function export-dotenv-file {
-	source "${1}"
-	export $(cat "${1}" | grep "=" | cut -d= -f1)
+	local dotenv_file="$1"
+	
+	if [ -z "$dotenv_file" ]; then
+		echo "Usage: export-dotenv-file <path-to-.env-file>"
+		return 1
+	fi
+	
+	if [ ! -f "$dotenv_file" ]; then
+		echo "Error: File '$dotenv_file' does not exist"
+		return 1
+	fi
+	
+	if [ ! -r "$dotenv_file" ]; then
+		echo "Error: File '$dotenv_file' is not readable"
+		return 1
+	fi
+	
+	# Source the file and export variables safely
+	set -a  # automatically export all variables
+	source "$dotenv_file"
+	set +a
 }
 
 # source: https://josh.fail/2021/using-direnv-to-set-a-custom-git-email-for-work-projects/

@@ -7,10 +7,11 @@ ssh-add --apple-use-keychain --apple-load-keychain
 alias dns="sudo killall -HUP mDNSResponder"
 alias brew-update="brew update ; brew upgrade ; brew cleanup"
 
-#  --dns 8.8.8.8 --dns 8.8.4.4 --dns 9.9.9.9 --dns 1.0.0.1
 function colima-start {
   colima start \
     --ssh-config=false \
+    --dns 9.9.9.9 \
+    --dns 1.0.0.1 \
     --cpu "${COLIMA_VM_CPU:-4}" \
     --memory "${COLIMA_VM_MEMORY:-16}" \
     --disk "${COLIMA_VM_DISK:-50}" \

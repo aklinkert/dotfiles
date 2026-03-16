@@ -251,3 +251,8 @@ function asdf-update-tools {
 
     echo "All tools have been updated to their latest versions."
 }
+
+function find-process-on-port {
+	local port="$1"
+	sudo lsof -i :$port
+}

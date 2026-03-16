@@ -13,3 +13,6 @@ tmp.*.*
 coverage.out
 tmp
 temp
+
+.claude/settings.local.json
+

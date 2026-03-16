@@ -47,6 +47,10 @@ alias first_col="awk '{ print \$1 }'"
 alias remove_first_line="tail -n +2"
 alias second_col="awk '{ print \$2 }'"
 alias third_col="awk '{ print \$3 }'"
+
+alias to_lower="awk '{ print tolower(\$0)} '"
+alias to_upper="awk '{ print toupper(\$0)} '"
+
 alias k="kubectl"
 alias tf="terraform"
 alias please="sudo"
@@ -98,3 +102,8 @@ for f in "$HOME/dotfiles/customers/*.sh"; do
     echoc blue "Including customer config for ${f}"
     source $f
 done
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/alex/.lmstudio/bin"
+# End of LM Studio CLI section
+

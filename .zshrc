@@ -2,6 +2,29 @@
 # Path to Oh My Zsh installation
 export ZSH="$HOME/.oh-my-zsh"
 
+# Git prompt settings - enable detailed status indicators
+# These must be set before Oh My Zsh loads
+export GIT_PROMPT_DIRTY="%{$fg[red]%}✗%{$reset_color%}"
+export GIT_PROMPT_CLEAN="%{$fg[green]%}✓%{$reset_color%}"
+
+# Enable git status in prompt (shows untracked, modified, etc.)
+# This makes robbyrussell theme more informative
+DISABLE_UNTRACKED_FILES_DIRTY="false"
+
+# git-prompt plugin settings (provides detailed status indicators)
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%} "
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}✗"
+ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%}) %{$fg[green]%}✓"
+
+# Show indicators for uncommitted changes
+ZSH_THEME_GIT_PROMPT_ADDED="%{$fg[green]%}+"
+ZSH_THEME_GIT_PROMPT_MODIFIED="%{$fg[yellow]%}△"
+ZSH_THEME_GIT_PROMPT_DELETED="%{$fg[red]%}-"
+ZSH_THEME_GIT_PROMPT_RENAMED="%{$fg[magenta]%}➜"
+ZSH_THEME_GIT_PROMPT_UNMERGED="%{$fg[red]%}═"
+ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}?"
+
 # Theme - using robbyrussell (clean, fast, git-aware)
 # Other good options: agnoster, powerlevel10k/powerlevel10k, spaceship
 ZSH_THEME="robbyrussell"
@@ -11,6 +34,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins: $ZSH_CUSTOM/plugins/
 plugins=(
   git                          # Git aliases and functions
+  git-prompt                   # Enhanced git status in prompt
   docker                       # Docker completion and aliases  
   docker-compose              # Docker Compose completion
   kubectl                      # Kubectl completion and aliases

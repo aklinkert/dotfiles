@@ -14,11 +14,9 @@ zstyle ':completion:*:descriptions' format '%B%d%b'   # Format group description
 # Kubectl completion (if not already handled by Oh My Zsh plugin)
 # command -v kubectl >/dev/null 2>&1 && source <(kubectl completion zsh)
 
-# Task completion (if taskwarrior is installed)
+# Task (go-task/task) completion
 if command -v task >/dev/null 2>&1; then
-  # Task completion is typically handled by package manager installations
-  # If custom completion is needed, it can be added here
-  :
+  eval "$(task --completion zsh)"
 fi
 
 # Additional tool completions can be added here

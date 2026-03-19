@@ -64,6 +64,11 @@ plugins=(
 # Load Oh My Zsh (now with PATH properly set)
 source $ZSH/oh-my-zsh.sh
 
+# Re-source shell_common.sh AFTER Oh My Zsh to override plugin aliases
+# Oh My Zsh git plugin sets its own aliases (gl, gp, etc.)
+# We want our custom aliases to take precedence
+source ~/dotfiles/shell_common.sh
+
 # Load shared functions
 source ~/dotfiles/functions.sh
 

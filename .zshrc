@@ -2,6 +2,21 @@
 # Path to Oh My Zsh installation
 export ZSH="$HOME/.oh-my-zsh"
 
+# IMPORTANT: Load PATH and environment BEFORE Oh My Zsh
+# This ensures plugins can find commands like docker, direnv, kubectl, etc.
+
+# Load shell-agnostic common configuration (sets PATH, exports, aliases)
+source ~/dotfiles/shell_common.sh
+
+# Load OS-specific configuration (adds Homebrew, asdf, etc. to PATH)
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  source "${HOME}/dotfiles/linux_common.sh"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  source "${HOME}/dotfiles/darwin_common.sh"
+fi
+
+# Now that PATH is set up, configure Oh My Zsh
+
 # Git prompt settings - enable detailed status indicators
 # These must be set before Oh My Zsh loads
 export GIT_PROMPT_DIRTY="%{$fg[red]%}✗%{$reset_color%}"
@@ -27,7 +42,8 @@ ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}?"
 
 # Theme - using robbyrussell (clean, fast, git-aware)
 # Other good options: agnoster, powerlevel10k/powerlevel10k, spaceship
-ZSH_THEME="robbyrussell"
+# skaro, simonoff
+ZSH_THEME="sunrise"
 
 # Oh My Zsh plugins
 # Standard plugins: $ZSH/plugins/
@@ -45,21 +61,11 @@ plugins=(
   zsh-autosuggestions         # Command suggestions based on history
 )
 
-# Load Oh My Zsh
+# Load Oh My Zsh (now with PATH properly set)
 source $ZSH/oh-my-zsh.sh
-
-# Load shell-agnostic common configuration
-source ~/dotfiles/shell_common.sh
 
 # Load shared functions
 source ~/dotfiles/functions.sh
-
-# Load OS-specific configuration
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  source "${HOME}/dotfiles/linux_common.sh"
-elif [[ "$OSTYPE" == "darwin"* ]]; then
-  source "${HOME}/dotfiles/darwin_common.sh"
-fi
 
 # Zsh-specific: reload alias
 alias reload="source ~/.zshrc"

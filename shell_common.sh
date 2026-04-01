@@ -3,7 +3,7 @@
 # Use only POSIX-compatible syntax that works in both bash and zsh
 
 # PATH Configuration
-export PATH=~/.asdf/shims:~/bin:/usr/local/bin:$HOME/go/bin:$HOME/bin:$PATH:${HOME}/.krew/bin
+export PATH=~/.asdf/shims:~/.local/bin:~/bin:/usr/local/bin:$HOME/go/bin:$HOME/bin:$PATH:${HOME}/.krew/bin
 
 # Environment Variables
 export NODE_ENV=development

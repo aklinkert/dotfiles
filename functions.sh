@@ -261,6 +261,7 @@ function asdf-install-plugins {
         tool=$(echo $line | awk '{print $1}')
 
         # Update the tool to the latest version
+        echo "installing $tool"
         asdf plugin add $tool
     done < .tool-versions
 
@@ -274,6 +275,7 @@ function asdf-update-tools {
         tool=$(echo $line | awk '{print $1}')
 
         # Update the tool to the latest version
+        echo "installing $tool"
         asdf install $tool latest
         asdf set $tool latest
     done < .tool-versions

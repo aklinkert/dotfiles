@@ -3,7 +3,7 @@
 # Use only POSIX-compatible syntax that works in both bash and zsh
 
 # PATH Configuration
-export PATH=~/.asdf/shims:~/.local/bin:~/bin:/usr/local/bin:$HOME/go/bin:$HOME/bin:$PATH:${HOME}/.krew/bin
+export PATH="~/.asdf/shims:~/.local/bin:~/bin:/usr/local/bin:$HOME/go/bin:$HOME/bin:$PATH:${HOME}/.krew/bin:~/.bun/bin"
 
 # Environment Variables
 export NODE_ENV=development
@@ -50,7 +50,7 @@ alias grs="git restore --staged ."
 alias gs="git status"
 alias gsa="git stash save"
 alias gsp="git stash pop"
-alias gf="git fetch --prune && git branch --merged | grep -v \"\*\" | xargs -n 1 git branch -d; git branch -vv | grep ': gone]' | grep -v '\*' | awk '{ print \$1; }' | xargs -r git branch -D"
+alias gf="git fetch --prune && git branch --merged | awk '!/^[*+]/ {print \$1}' | xargs -r -n 1 git branch -d; git branch -vv | grep ': gone]' | awk '!/^[*+]/ {print \$1}' | xargs -r git branch -D"
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
 
 # Git rebase aliases

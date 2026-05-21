@@ -25,6 +25,7 @@ export GIT_PROMPT_CLEAN="%{$fg[green]%}✓%{$reset_color%}"
 # Enable git status in prompt (shows untracked, modified, etc.)
 # This makes robbyrussell theme more informative
 DISABLE_UNTRACKED_FILES_DIRTY="false"
+DISABLE_UPDATE_PROMPT=true
 
 # git-prompt plugin settings (provides detailed status indicators)
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg_bold[blue]%}git:(%{$fg[red]%}"
@@ -116,7 +117,7 @@ HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 setopt APPEND_HISTORY       # Append to history file
-setopt SHARE_HISTORY        # Share history between sessions
+unsetopt SHARE_HISTORY      # Don't share history between concurrent sessions
 setopt HIST_IGNORE_DUPS     # Don't record duplicates
 setopt HIST_IGNORE_SPACE    # Don't record commands starting with space
 setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks from history

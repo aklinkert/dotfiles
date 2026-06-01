@@ -49,6 +49,77 @@ mkdir -p -m 0700 ~/.ssh
 ln -sf $dir/ssh/config ~/.ssh/config
 echo "Creating symlink to ssh config file."
 
+########## Claude user-space config
+
+claude_home=~/.claude
+claude_dotfiles=$dir/.claude
+claude_backup=$olddir/.claude
+
+mkdir -p "$claude_dotfiles" "$claude_backup"
+
+# Helper: backup + move + symlink a single path under ~/.claude
+link_claude_entry() {
+    local rel="$1"                          # e.g. agents, CLAUDE.md, skills/drawio
+    local src="$claude_home/$rel"
+    local dst="$claude_dotfiles/$rel"
+    local bak="$claude_backup/$rel"
+
+    # Already correctly symlinked
+    if [ -L "$src" ] && [ "$(readlink "$src")" = "$dst" ]; then
+        echo "  ~/.claude/$rel already linked"
+        return 0
+    fi
+
+    mkdir -p "$(dirname "$bak")" "$(dirname "$dst")"
+
+    if [ -e "$src" ] || [ -L "$src" ]; then
+        if [ -e "$dst" ]; then
+            # dotfiles copy already exists — back up home version, replace with symlink
+            echo "  Backing up ~/.claude/$rel (dotfiles copy exists)"
+            rm -rf "$bak"
+            mv "$src" "$bak"
+        else
+            echo "  Moving ~/.claude/$rel -> dotfiles"
+            # Stash a backup copy first, then move into dotfiles
+            cp -a "$src" "$bak"
+            mv "$src" "$dst"
+        fi
+    fi
+
+    if [ ! -e "$dst" ]; then
+        echo "  WARN: $dst missing, skipping link"
+        return 0
+    fi
+
+    ln -snf "$dst" "$src"
+    echo "  Linked ~/.claude/$rel -> $dst"
+}
+
+echo ""
+echo "Linking Claude user-space config (~/.claude)"
+
+# Top-level dirs and files
+for entry in agents commands rules hooks CLAUDE.md settings.json statusline-command.sh; do
+    link_claude_entry "$entry"
+done
+
+# Skills: only real (non-symlink) children, preserve plugin symlinks in place
+mkdir -p "$claude_dotfiles/skills"
+if [ -d "$claude_home/skills" ]; then
+    for skill_path in "$claude_home/skills"/*; do
+        [ -e "$skill_path" ] || continue
+        # Skip symlinks (plugin-provided skills point at ~/.agents/skills/*)
+        if [ -L "$skill_path" ]; then
+            echo "  Skipping plugin symlink: $skill_path"
+            continue
+        fi
+        skill_name="$(basename "$skill_path")"
+        link_claude_entry "skills/$skill_name"
+    done
+fi
+
+echo "...Claude user-space linked"
+
 echo ""
 echo "=== Setup Complete ==="
 echo ""

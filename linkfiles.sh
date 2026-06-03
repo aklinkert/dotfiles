@@ -99,24 +99,9 @@ echo ""
 echo "Linking Claude user-space config (~/.claude)"
 
 # Top-level dirs and files
-for entry in agents commands rules hooks CLAUDE.md settings.json statusline-command.sh; do
+for entry in agents commands rules hooks skills CLAUDE.md settings.json statusline-command.sh; do
     link_claude_entry "$entry"
 done
-
-# Skills: only real (non-symlink) children, preserve plugin symlinks in place
-mkdir -p "$claude_dotfiles/skills"
-if [ -d "$claude_home/skills" ]; then
-    for skill_path in "$claude_home/skills"/*; do
-        [ -e "$skill_path" ] || continue
-        # Skip symlinks (plugin-provided skills point at ~/.agents/skills/*)
-        if [ -L "$skill_path" ]; then
-            echo "  Skipping plugin symlink: $skill_path"
-            continue
-        fi
-        skill_name="$(basename "$skill_path")"
-        link_claude_entry "skills/$skill_name"
-    done
-fi
 
 echo "...Claude user-space linked"
 

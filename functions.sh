@@ -387,7 +387,9 @@ EOF
 
 	# 1. Iterate registered worktrees under .claude/worktrees (BEFORE prune, so
 	#    dangling entries are still listed and their branches handled safely).
-	local path="" branch="" line
+	#    NB: do NOT name a local "path" — in zsh it is tied to $PATH and would
+	#    blank the command search path inside this function.
+	local wt_path="" branch="" line
 	_claude_wt_consider() {
 		local p="$1" b="$2"
 		[ -z "$p" ] && return
@@ -430,14 +432,14 @@ EOF
 
 	while IFS= read -r line; do
 		case "$line" in
-			worktree\ *) path="${line#worktree }" ;;
+			worktree\ *) wt_path="${line#worktree }" ;;
 			branch\ *)   branch="${line#branch refs/heads/}" ;;
-			"")          _claude_wt_consider "$path" "$branch"; path=""; branch="" ;;
+			"")          _claude_wt_consider "$wt_path" "$branch"; wt_path=""; branch="" ;;
 		esac
 	done <<EOF
 ${wt_porcelain}
 EOF
-	_claude_wt_consider "$path" "$branch"  # trailing block
+	_claude_wt_consider "$wt_path" "$branch"  # trailing block
 	unset -f _claude_wt_consider _claude_wt_drop_branch
 
 	# 2. Prune any remaining admin refs whose directory is gone (safety net).

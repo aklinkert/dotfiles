@@ -4,6 +4,7 @@
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
 export HOMEBREW_PREFIX="$(brew --prefix)"
+export HOMEBREW_NO_REQUIRE_TAP_TRUST=1
 
 # Add SSH keys to keychain (suppress errors if already added)
 ssh-add --apple-use-keychain --apple-load-keychain 2>/dev/null
@@ -19,8 +20,8 @@ function colima-start {
     --ssh-config=false \
     --dns 9.9.9.9 \
     --dns 1.0.0.1 \
-    --cpu "${COLIMA_VM_CPU:-4}" \
-    --memory "${COLIMA_VM_MEMORY:-16}" \
+    --cpu "${COLIMA_VM_CPU:-2}" \
+    --memory "${COLIMA_VM_MEMORY:-8}" \
     --disk "${COLIMA_VM_DISK:-50}" \
     --profile "${COLIMA_PROFILE:-default}"
 }

@@ -319,18 +319,53 @@ function claude-worktree-clean {
 	local dry_run=1
 	[ "$apply" -eq 1 ] && dry_run=0
 
+	# Resolve git to an absolute path up front. Some repos (e.g. direnv-managed)
+	# mutate PATH mid-command, so a bare `git` can vanish between calls; an
+	# absolute binary keeps working regardless. All git calls below use $GIT.
+	local GIT
+	GIT=$(command -v git 2>/dev/null) || {
+		echoc red "git not found in PATH — aborting"
+		return 1
+	}
+
 	local repo_root
-	repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+	repo_root=$("$GIT" rev-parse --show-toplevel 2>/dev/null) || {
 		echoc red "Not inside a git repository"
 		return 1
 	}
 
 	local wt_dir="${repo_root}/.claude/worktrees"
 
+	# Capture the worktree registry ONCE up front. If this fails we must abort —
+	# an empty list would make every directory look like an orphan and could
+	# delete active worktrees. Never proceed on a failed/empty listing.
+	local wt_porcelain
+	wt_porcelain=$("$GIT" worktree list --porcelain) || {
+		echoc red "Failed to list git worktrees — aborting"
+		return 1
+	}
+	if [ -z "$wt_porcelain" ]; then
+		echoc red "Empty git worktree listing — aborting (refusing to treat all dirs as orphans)"
+		return 1
+	fi
+
+	# Pre-build the registered-paths list with pure shell (no external tools, so
+	# orphan detection below can't be fooled by a tool disappearing mid-run).
+	local wt_registered="" _l
+	while IFS= read -r _l; do
+		case "$_l" in
+			worktree\ *) wt_registered="${wt_registered}${_l#worktree }
+" ;;
+		esac
+	done <<EOF
+${wt_porcelain}
+EOF
+
 	# Resolve default branch (origin/HEAD, else current branch).
 	local default_branch
-	default_branch=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@')
-	[ -z "$default_branch" ] && default_branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+	default_branch=$("$GIT" symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)
+	default_branch="${default_branch#origin/}"
+	[ -z "$default_branch" ] && default_branch=$("$GIT" rev-parse --abbrev-ref HEAD 2>/dev/null)
 
 	echoc blue "Claude worktree cleanup in ${repo_root}"
 	echoc blue "  worktree dir:   ${wt_dir}"
@@ -342,9 +377,9 @@ function claude-worktree-clean {
 	_claude_wt_drop_branch() {
 		local b="$1"
 		[ -z "$b" ] && return
-		if [ "$force" -eq 1 ] || git merge-base --is-ancestor "$b" "$default_branch" 2>/dev/null; then
+		if [ "$force" -eq 1 ] || "$GIT" merge-base --is-ancestor "$b" "$default_branch" 2>/dev/null; then
 			[ "$dry_run" -eq 1 ] && { echo "          would delete branch '${b}'"; return; }
-			git branch -D "$b" 2>/dev/null
+			"$GIT" branch -D "$b" 2>/dev/null
 		else
 			echoc yellow "          kept branch '${b}' (unmerged) — delete manually if unwanted"
 		fi
@@ -365,7 +400,7 @@ function claude-worktree-clean {
 		local reason=""
 		if [ ! -d "$p" ]; then
 			reason="missing dir (dangling)"
-		elif [ -n "$b" ] && git merge-base --is-ancestor "$b" "$default_branch" 2>/dev/null; then
+		elif [ -n "$b" ] && "$GIT" merge-base --is-ancestor "$b" "$default_branch" 2>/dev/null; then
 			reason="branch '${b}' merged into ${default_branch}"
 		elif [ "$force" -eq 1 ]; then
 			reason="forced"
@@ -383,9 +418,9 @@ function claude-worktree-clean {
 		echoc green "  removing: ${p} (${reason})"
 		# --force handles dirty trees and dangling (missing-dir) worktrees.
 		if [ "$force" -eq 1 ] || [ ! -d "$p" ]; then
-			git worktree remove --force "$p" 2>/dev/null || rm -rf "$p"
+			"$GIT" worktree remove --force "$p" 2>/dev/null || rm -rf "$p"
 		else
-			git worktree remove "$p" 2>/dev/null || {
+			"$GIT" worktree remove "$p" 2>/dev/null || {
 				echoc red "    failed (dirty/locked?) — skipping; rerun with --force"
 				return
 			}
@@ -399,30 +434,38 @@ function claude-worktree-clean {
 			branch\ *)   branch="${line#branch refs/heads/}" ;;
 			"")          _claude_wt_consider "$path" "$branch"; path=""; branch="" ;;
 		esac
-	done < <(git worktree list --porcelain)
+	done <<EOF
+${wt_porcelain}
+EOF
 	_claude_wt_consider "$path" "$branch"  # trailing block
 	unset -f _claude_wt_consider _claude_wt_drop_branch
 
 	# 2. Prune any remaining admin refs whose directory is gone (safety net).
 	if [ "$dry_run" -eq 1 ]; then
-		git worktree prune --dry-run --verbose
+		"$GIT" worktree prune --dry-run --verbose
 	else
-		git worktree prune --verbose
+		"$GIT" worktree prune --verbose
 	fi
 
 	# 3. Remove orphaned directories with no matching worktree registration.
+	#    Membership is tested in pure shell against the pre-built registry, so a
+	#    missing tool can never silently empty the registry and flag live dirs.
 	if [ -d "$wt_dir" ]; then
-		local registered d
-		registered=$(git worktree list --porcelain | sed -n 's/^worktree //p')
+		local d r matched
 		for d in "$wt_dir"/*; do
 			[ -d "$d" ] || continue
-			if ! printf '%s\n' "$registered" | grep -qxF "$d"; then
-				if [ "$dry_run" -eq 1 ]; then
-					echoc green "  remove orphan dir: ${d}"
-				else
-					echoc green "  removing orphan dir: ${d}"
-					rm -rf "$d"
-				fi
+			matched=0
+			while IFS= read -r r; do
+				[ "$r" = "$d" ] && { matched=1; break; }
+			done <<EOF
+${wt_registered}
+EOF
+			[ "$matched" -eq 1 ] && continue
+			if [ "$dry_run" -eq 1 ]; then
+				echoc green "  remove orphan dir: ${d}"
+			else
+				echoc green "  removing orphan dir: ${d}"
+				rm -rf "$d"
 			fi
 		done
 		# drop the worktrees dir entirely if now empty

@@ -141,32 +141,22 @@ function echoc {
     local color=$1
     local exp=$2
 
-    # Map colour names to codes. Numeric input passes through untouched.
-    case $color in
-        ''|*[!0-9]*)
-            # Lowercase only if tr is available; PATH may be munged (direnv etc).
-            command -v tr >/dev/null 2>&1 && color=$(echo "$color" | tr '[:upper:]' '[:lower:]')
-            case $color in
-                black) color=0 ;;
-                red) color=1 ;;
-                green) color=2 ;;
-                yellow) color=3 ;;
-                blue) color=4 ;;
-                magenta) color=5 ;;
-                cyan) color=6 ;;
-                white|*) color=7 ;; # white or invalid color
-            esac
-            ;;
-    esac
-
-    # Fall back to plain output when tput is unavailable.
-    if command -v tput >/dev/null 2>&1; then
-        tput setaf "$color"
-        echo "$exp"
-        tput sgr0
-    else
-        echo "$exp"
+    if ! [[ $color =~ '^[0-9]$' ]] ; then
+       case $(echo $color | tr '[:upper:]' '[:lower:]') in
+        black) color=0 ;;
+        red) color=1 ;;
+        green) color=2 ;;
+        yellow) color=3 ;;
+        blue) color=4 ;;
+        magenta) color=5 ;;
+        cyan) color=6 ;;
+        white|*) color=7 ;; # white or invalid color
+       esac
     fi
+
+    tput setaf $color
+    echo $exp
+    tput sgr0
 }
 
 function rename-files-recursive {

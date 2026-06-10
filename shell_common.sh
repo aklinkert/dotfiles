@@ -3,7 +3,9 @@
 # Use only POSIX-compatible syntax that works in both bash and zsh
 
 # PATH Configuration
-export PATH="~/.asdf/shims:~/.local/bin:~/bin:/usr/local/bin:$HOME/go/bin:$HOME/bin:$PATH:${HOME}/.krew/bin:~/.bun/bin"
+# NB: use $HOME, not ~ — tilde does not expand inside double quotes, which
+# would inject dead literal "~/..." entries and break command lookup.
+export PATH="$HOME/.asdf/shims:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$PATH:${HOME}/.krew/bin:$HOME/.bun/bin"
 
 # Environment Variables
 export NODE_ENV=development

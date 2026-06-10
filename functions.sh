@@ -287,3 +287,192 @@ function find-process-on-port {
 	local port="$1"
 	sudo lsof -i :$port
 }
+
+# Cleanup stale Claude Code git worktrees under <repo>/.claude/worktrees.
+# Stale = dangling admin ref (dir gone), branch fully merged into the default
+# branch, or an orphaned directory with no matching worktree registration.
+# Dry-run by default; pass --force / -f to actually delete.
+function claude-worktree-clean {
+	local force=0 apply=0 arg
+	for arg in "$@"; do
+		case "$arg" in
+			--apply|-y)   apply=1 ;;
+			--force|-f)   force=1; apply=1 ;;
+			--dry-run|-n) apply=0 ;;
+			-h|--help)
+				echo "Usage: claude-worktree-clean [--apply|-y] [--force|-f] [--dry-run|-n]"
+				echo "  Cleans stale .claude/worktrees and prunes git worktree refs."
+				echo "  Stale = dangling ref (dir gone), branch merged, or orphan dir."
+				echo ""
+				echo "  (default)      dry-run; show the safe cleanup plan"
+				echo "  --apply, -y    apply safe cleanup; keep unmerged worktrees"
+				echo "  --force, -f    also remove unmerged/dirty worktrees (implies --apply)"
+				echo "  --dry-run, -n  never delete (combine with --force to preview it)"
+				return 0
+				;;
+			*)
+				echoc red "Unknown option: ${arg}"
+				return 1
+				;;
+		esac
+	done
+	local dry_run=1
+	[ "$apply" -eq 1 ] && dry_run=0
+
+	# Resolve git to an absolute path up front. Some repos (e.g. direnv-managed)
+	# mutate PATH mid-command, so a bare `git` can vanish between calls; an
+	# absolute binary keeps working regardless. All git calls below use $GIT.
+	local GIT
+	GIT=$(command -v git 2>/dev/null) || {
+		echoc red "git not found in PATH — aborting"
+		return 1
+	}
+
+	local repo_root
+	repo_root=$("$GIT" rev-parse --show-toplevel 2>/dev/null) || {
+		echoc red "Not inside a git repository"
+		return 1
+	}
+
+	local wt_dir="${repo_root}/.claude/worktrees"
+
+	# Capture the worktree registry ONCE up front. If this fails we must abort —
+	# an empty list would make every directory look like an orphan and could
+	# delete active worktrees. Never proceed on a failed/empty listing.
+	local wt_porcelain
+	wt_porcelain=$("$GIT" worktree list --porcelain) || {
+		echoc red "Failed to list git worktrees — aborting"
+		return 1
+	}
+	if [ -z "$wt_porcelain" ]; then
+		echoc red "Empty git worktree listing — aborting (refusing to treat all dirs as orphans)"
+		return 1
+	fi
+
+	# Pre-build the registered-paths list with pure shell (no external tools, so
+	# orphan detection below can't be fooled by a tool disappearing mid-run).
+	local wt_registered="" _l
+	while IFS= read -r _l; do
+		case "$_l" in
+			worktree\ *) wt_registered="${wt_registered}${_l#worktree }
+" ;;
+		esac
+	done <<EOF
+${wt_porcelain}
+EOF
+
+	# Resolve default branch (origin/HEAD, else current branch).
+	local default_branch
+	default_branch=$("$GIT" symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null)
+	default_branch="${default_branch#origin/}"
+	[ -z "$default_branch" ] && default_branch=$("$GIT" rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+	echoc blue "Claude worktree cleanup in ${repo_root}"
+	echoc blue "  worktree dir:   ${wt_dir}"
+	echoc blue "  default branch: ${default_branch}"
+	[ "$dry_run" -eq 1 ] && echoc yellow "  DRY-RUN (pass --apply to delete)"
+
+	# Delete a branch only when it is safe (merged) or explicitly forced; an
+	# unmerged branch may hold the only copy of work, so keep + warn instead.
+	_claude_wt_drop_branch() {
+		local b="$1"
+		[ -z "$b" ] && return
+		if [ "$force" -eq 1 ] || "$GIT" merge-base --is-ancestor "$b" "$default_branch" 2>/dev/null; then
+			[ "$dry_run" -eq 1 ] && { echo "          would delete branch '${b}'"; return; }
+			"$GIT" branch -D "$b" 2>/dev/null
+		else
+			echoc yellow "          kept branch '${b}' (unmerged) — delete manually if unwanted"
+		fi
+	}
+
+	# 1. Iterate registered worktrees under .claude/worktrees (BEFORE prune, so
+	#    dangling entries are still listed and their branches handled safely).
+	#    NB: do NOT name a local "path" — in zsh it is tied to $PATH and would
+	#    blank the command search path inside this function.
+	local wt_path="" branch="" line
+	_claude_wt_consider() {
+		local p="$1" b="$2"
+		[ -z "$p" ] && return
+		# only touch worktrees living under .claude/worktrees
+		case "$p" in
+			"${wt_dir}/"*) ;;
+			*) return ;;
+		esac
+
+		local reason=""
+		if [ ! -d "$p" ]; then
+			reason="missing dir (dangling)"
+		elif [ -n "$b" ] && "$GIT" merge-base --is-ancestor "$b" "$default_branch" 2>/dev/null; then
+			reason="branch '${b}' merged into ${default_branch}"
+		elif [ "$force" -eq 1 ]; then
+			reason="forced"
+		else
+			echoc yellow "  keep:   ${p} (branch '${b:-detached}' not merged; use --force)"
+			return
+		fi
+
+		if [ "$dry_run" -eq 1 ]; then
+			echoc green "  remove: ${p} (${reason})"
+			_claude_wt_drop_branch "$b"
+			return
+		fi
+
+		echoc green "  removing: ${p} (${reason})"
+		# --force handles dirty trees and dangling (missing-dir) worktrees.
+		if [ "$force" -eq 1 ] || [ ! -d "$p" ]; then
+			"$GIT" worktree remove --force "$p" 2>/dev/null || rm -rf "$p"
+		else
+			"$GIT" worktree remove "$p" 2>/dev/null || {
+				echoc red "    failed (dirty/locked?) — skipping; rerun with --force"
+				return
+			}
+		fi
+		_claude_wt_drop_branch "$b"
+	}
+
+	while IFS= read -r line; do
+		case "$line" in
+			worktree\ *) wt_path="${line#worktree }" ;;
+			branch\ *)   branch="${line#branch refs/heads/}" ;;
+			"")          _claude_wt_consider "$wt_path" "$branch"; wt_path=""; branch="" ;;
+		esac
+	done <<EOF
+${wt_porcelain}
+EOF
+	_claude_wt_consider "$wt_path" "$branch"  # trailing block
+	unset -f _claude_wt_consider _claude_wt_drop_branch
+
+	# 2. Prune any remaining admin refs whose directory is gone (safety net).
+	if [ "$dry_run" -eq 1 ]; then
+		"$GIT" worktree prune --dry-run --verbose
+	else
+		"$GIT" worktree prune --verbose
+	fi
+
+	# 3. Remove orphaned directories with no matching worktree registration.
+	#    Membership is tested in pure shell against the pre-built registry, so a
+	#    missing tool can never silently empty the registry and flag live dirs.
+	if [ -d "$wt_dir" ]; then
+		local d r matched
+		for d in "$wt_dir"/*; do
+			[ -d "$d" ] || continue
+			matched=0
+			while IFS= read -r r; do
+				[ "$r" = "$d" ] && { matched=1; break; }
+			done <<EOF
+${wt_registered}
+EOF
+			[ "$matched" -eq 1 ] && continue
+			if [ "$dry_run" -eq 1 ]; then
+				echoc green "  remove orphan dir: ${d}"
+			else
+				echoc green "  removing orphan dir: ${d}"
+				rm -rf "$d"
+			fi
+		done
+		# drop the worktrees dir entirely if now empty
+		rmdir "$wt_dir" 2>/dev/null
+	fi
+
+	echoc blue "Done."
+}

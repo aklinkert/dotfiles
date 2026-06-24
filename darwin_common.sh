@@ -42,6 +42,10 @@ fi
 function cleanup-caches {
   # Source: https://github.com/paulaime/CleanUpMac/blob/master/cleanup
 
+  # Suppress zsh's "sure you want to delete all the files in ..." prompt on `rm *`.
+  # local_options restores the previous option state when the function returns.
+  setopt local_options rm_star_silent
+
   echo 'Empty the Trash on all mounted volumes and the main HDD ...'
   sudo rm -rfv /Volumes/*/.Trashes &>/dev/null
   sudo rm -rfv ~/.Trash &>/dev/null

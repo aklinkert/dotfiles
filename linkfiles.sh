@@ -49,6 +49,13 @@ mkdir -p -m 0700 ~/.ssh
 ln -sf $dir/ssh/config ~/.ssh/config
 echo "Creating symlink to ssh config file."
 
+# Expose the statusline wrapper on PATH for subcommand use (migrate, health, ...).
+# The wrapper itself lives in the repo and is linked into ~/.claude below;
+# this is just a PATH-visible alias to the same script.
+mkdir -p ~/.local/bin
+ln -sf "$dir/.claude/statusline-command.sh" ~/.local/bin/statusline
+echo "Creating symlink to statusline wrapper on PATH."
+
 ########## Claude user-space config
 
 claude_home=~/.claude

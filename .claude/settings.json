@@ -27,7 +27,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "/Users/alex/.local/bin/statusline"
+    "command": "/Users/alex/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
     "frontend-design@claude-plugins-official": false,
@@ -56,9 +56,16 @@
     "caveman@caveman": true,
     "atlassian@claude-plugins-official": false,
     "recap@annikalewis": true,
-    "context-mode@context-mode": true
+    "context-mode@context-mode": true,
+    "clp-dev-agents@cloudpilots-plugins": true
   },
   "extraKnownMarketplaces": {
+    "cloudpilots-plugins": {
+      "source": {
+        "source": "git",
+        "url": "timetoact@timetoact.ghe.com:clp-internal-shared/claude-plugins.git"
+      }
+    },
     "caveman": {
       "source": {
         "source": "github",

@@ -1,3 +1,6 @@
+# Machine-local, untracked overrides (host-specific credentials, work config).
+[include]
+	path = ~/.gitconfig.local
 [push]
 	default = simple
 	followTags = true
@@ -45,3 +48,9 @@
 	skippedCherryPicks = false
 [lfs]
 	access = basic
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

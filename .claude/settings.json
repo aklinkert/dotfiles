@@ -20,6 +20,10 @@
           {
             "type": "command",
             "command": "\"/Users/alex/.claude/hooks/context-mode-cache-heal.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "nohup \"/Users/alex/.claude/hooks/plugin-auto-update.sh\" >/dev/null 2>&1 &"
           }
         ]
       }
@@ -56,16 +60,9 @@
     "caveman@caveman": true,
     "atlassian@claude-plugins-official": false,
     "recap@annikalewis": true,
-    "context-mode@context-mode": true,
-    "clp-dev-agents@cloudpilots-plugins": true
+    "context-mode@context-mode": true
   },
   "extraKnownMarketplaces": {
-    "cloudpilots-plugins": {
-      "source": {
-        "source": "git",
-        "url": "timetoact@timetoact.ghe.com:clp-internal-shared/claude-plugins.git"
-      }
-    },
     "caveman": {
       "source": {
         "source": "github",

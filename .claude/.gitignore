@@ -1,3 +1,5 @@
 *.bak
 *.local.json
 .DS_Store
+# settings.json is per-machine (CCS shares ~/.claude/settings.json across profiles); not tracked
+settings.json

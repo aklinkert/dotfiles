@@ -43,18 +43,17 @@ sep=" ${sepc} "
 prefix=""
 [ -n "$profile" ] && prefix="${esc}[2;38;5;245m⚙ ${profile}${esc}[0m${sep}"
 
-# Two-line layout: line 1 = ⚙ profile • <path>, line 2 = everything else
-# (git branch, context, model, cost, day usage). Keeping the profile and the
-# collapsed path on line 1 guarantees both are always visible; the metrics
-# reflow onto line 2 instead of being truncated off the right edge.
+# Single-line layout, profile first: ⚙ profile • <path> • <git> • <context> …
+# Stays on one row when it fits and lets the terminal soft-wrap when the pane is
+# narrow — nothing is forced onto a second line. Putting the profile and the
+# collapsed path first means they survive on the left even if the tail is cut.
 if [[ "$out" == "${esc}[36m"*"${esc}[0m"* ]]; then
   rest="${out#"${esc}[36m"}"          # strip leading cyan
   path="${rest%%"${esc}[0m"*}"        # path up to reset
   tail="${rest#*"${esc}[0m"}"         # separator + remaining segments
-  tail="${tail#"$sep"}"               # drop the separator now leading line 2
-  printf '%s%s\n%s' "$prefix" "${esc}[36m$(shorten_path "$path")${esc}[0m" "$tail"
+  printf '%s%s%s' "$prefix" "${esc}[36m$(shorten_path "$path")${esc}[0m" "$tail"
 elif [ -n "$prefix" ]; then
-  printf '%s\n%s' "${prefix%"$sep"}" "$out"
+  printf '%s%s' "$prefix" "$out"
 else
   printf '%s' "$out"
 fi

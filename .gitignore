@@ -2,3 +2,7 @@
 
 .claude/settings*
 !.claude/settings.json
+
+# machine-local command symlinks (point to ~/.ccs), not portable
+.claude/commands/ccs
+.claude/commands/ccs.md

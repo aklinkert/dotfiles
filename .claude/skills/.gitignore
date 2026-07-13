@@ -1,1 +1,4 @@
 google-agents-cli-*
+# machine-local symlinks (point outside the repo), not portable — don't track
+ccs-delegation
+weekly-recap

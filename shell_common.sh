@@ -55,6 +55,9 @@ alias gsp="git stash pop"
 alias gf="git fetch --prune && git branch --merged | awk '!/^[*+]/ {print \$1}' | xargs -r -n 1 git branch -d; git branch -vv | grep ': gone]' | awk '!/^[*+]/ {print \$1}' | xargs -r git branch -D"
 alias gl="git log --pretty=oneline --abbrev-commit --graph --decorate"
 
+# Sync main: checkout, pull --rebase, prune merged/gone branches
+alias gum="git checkout main && gp && gf"
+
 # Git rebase aliases
 alias grom="git rebase origin/main"
 alias gurm="git checkout main && gp && git checkout - && grom"

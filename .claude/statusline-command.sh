@@ -43,17 +43,36 @@ sep=" ${sepc} "
 prefix=""
 [ -n "$profile" ] && prefix="${esc}[2;38;5;245m⚙ ${profile}${esc}[0m${sep}"
 
-# Single-line layout, profile first: ⚙ profile • <path> • <git> • <context> …
-# Stays on one row when it fits and lets the terminal soft-wrap when the pane is
-# narrow — nothing is forced onto a second line. Putting the profile and the
-# collapsed path first means they survive on the left even if the tail is cut.
+# Assemble the full styled line, profile first, path collapsed:
+#   ⚙ profile • <path> • <git> • <context> • <model> • <cost> …
 if [[ "$out" == "${esc}[36m"*"${esc}[0m"* ]]; then
   rest="${out#"${esc}[36m"}"          # strip leading cyan
   path="${rest%%"${esc}[0m"*}"        # path up to reset
   tail="${rest#*"${esc}[0m"}"         # separator + remaining segments
-  printf '%s%s%s' "$prefix" "${esc}[36m$(shorten_path "$path")${esc}[0m" "$tail"
-elif [ -n "$prefix" ]; then
-  printf '%s%s' "$prefix" "$out"
+  full="${prefix}${esc}[36m$(shorten_path "$path")${esc}[0m${tail}"
 else
-  printf '%s' "$out"
+  full="${prefix}${out}"
 fi
+
+# Width-aware wrap. Claude Code exports $COLUMNS to the statusline command, and
+# it truncates each output line to the pane width (it does not soft-wrap). So we
+# keep everything on one row while it fits, and once it would overflow we break
+# at " • " segment boundaries onto extra rows — nothing is cut. Profile and path
+# come first, so they always land on row one.
+shopt -s extglob
+cols=$(( ${COLUMNS:-999} - 1 ))
+mapfile -t segs <<< "${full//"$sep"/$'\n'}"
+line=""; llen=0
+for s in "${segs[@]}"; do
+  clean=${s//"$esc"\[*([0-9;])m/}     # strip ANSI for width measurement
+  slen=${#clean}
+  if [ -z "$line" ]; then
+    line="$s"; llen=$slen
+  elif (( llen + 3 + slen <= cols )); then
+    line+="${sep}${s}"; llen=$(( llen + 3 + slen ))
+  else
+    printf '%s\n' "$line"
+    line="$s"; llen=$slen
+  fi
+done
+printf '%s' "$line"

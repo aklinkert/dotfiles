@@ -1,3 +1,5 @@
+Include /Users/alex/.colima/ssh_config
+
 Host *
 	ForwardAgent yes
 	# Security: Only disable strict host checking per-host as needed

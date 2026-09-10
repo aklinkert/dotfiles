@@ -14,6 +14,7 @@ export GOPATH=~/go
 export GIT_MERGE_AUTOEDIT=no
 export GPG_TTY=$(tty)
 export EDITOR="code -w"
+export VISUAL="$EDITOR"
 export LC_ALL=en_US.UTF-8
 
 # Liquidprompt settings (bash-specific but harmless in zsh)

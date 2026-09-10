@@ -4,7 +4,6 @@
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
 export HOMEBREW_PREFIX="$(brew --prefix)"
-export HOMEBREW_NO_REQUIRE_TAP_TRUST=1
 export HOMEBREW_NO_ASK=1  # skip brew 6.0 upgrade confirmation prompt
 
 # Add SSH keys to keychain (suppress errors if already added)

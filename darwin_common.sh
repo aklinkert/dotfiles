@@ -37,45 +37,6 @@ if [ -f "${HOMEBREW_PREFIX}/opt/asdf/libexec/asdf.sh" ]; then
     . "${HOMEBREW_PREFIX}/opt/asdf/libexec/asdf.sh"
 fi
 
-# Helpers for cleanup-caches (defined at file scope so plain `find`/`rm`
-# combos below never trip a zsh "no matches found" error on an unmatched
-# glob — that error fires at expansion time, before `rm` even runs, so
-# `&>/dev/null` can't suppress it. These take real paths instead of globs.
-
-# Delete the *contents* of one or more existing directories. Missing
-# directories are silently skipped.
-_cleanup_purge() {
-  local dir
-  for dir in "$@"; do
-    [ -n "$dir" ] && [ -d "$dir" ] || continue
-    find "$dir" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null
-  done
-}
-
-# Same as _cleanup_purge, but for root-owned paths.
-_cleanup_purge_sudo() {
-  local dir
-  for dir in "$@"; do
-    [ -n "$dir" ] && [ -d "$dir" ] || continue
-    sudo find "$dir" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null
-  done
-}
-
-# Delete files matching a name pattern directly inside one directory
-# (no recursion), e.g. _cleanup_purge_glob /private/var/log/asl '*.asl'.
-_cleanup_purge_glob() {
-  local dir="$1" pattern="$2"
-  [ -n "$dir" ] && [ -d "$dir" ] || return 0
-  find "$dir" -maxdepth 1 -name "$pattern" -delete 2>/dev/null
-}
-
-# Same as _cleanup_purge_glob, but for root-owned paths.
-_cleanup_purge_glob_sudo() {
-  local dir="$1" pattern="$2"
-  [ -n "$dir" ] && [ -d "$dir" ] || return 0
-  sudo find "$dir" -maxdepth 1 -name "$pattern" -delete 2>/dev/null
-}
-
 # macOS-specific cleanup function
 function cleanup-caches {
   # Source: https://github.com/paulaime/CleanUpMac/blob/master/cleanup
@@ -85,8 +46,68 @@ function cleanup-caches {
   # CLEANUP_GO_MODCACHE=1 to also wipe the Go module cache (off by default —
   # it's expensive to re-download).
 
+  # Helpers for cleanup-caches (defined here, at the top of the function
+  # body, so plain `find`/`rm` combos below never trip a zsh "no matches
+  # found" error on an unmatched glob — that error fires at expansion time,
+  # before `rm` even runs, so `&>/dev/null` can't suppress it. These take
+  # real paths instead of globs.
+
+  # Delete the *contents* of one or more existing directories. Missing
+  # directories are silently skipped.
+  cleanup_purge() {
+    local dir
+    for dir in "$@"; do
+      [ -n "$dir" ] && [ -d "$dir" ] || continue
+      find "$dir" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null
+    done
+  }
+
+  # Same as cleanup_purge, but for root-owned paths. No-ops (and counts the
+  # skip in sudo_skips) when sudo isn't available, so call sites don't need
+  # their own have_sudo conditionals.
+  cleanup_purge_sudo() {
+    if [ "$have_sudo" != "1" ]; then
+      sudo_skips=$((sudo_skips + 1))
+      return 0
+    fi
+    local dir
+    for dir in "$@"; do
+      [ -n "$dir" ] && [ -d "$dir" ] || continue
+      sudo find "$dir" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null
+    done
+  }
+
+  # Delete files matching a name pattern directly inside one directory
+  # (no recursion), e.g. cleanup_purge_glob /private/var/log/asl '*.asl'.
+  cleanup_purge_glob() {
+    local dir="$1" pattern="$2"
+    [ -n "$dir" ] && [ -d "$dir" ] || return 0
+    find "$dir" -maxdepth 1 -name "$pattern" -delete 2>/dev/null
+  }
+
+  # Same as cleanup_purge_glob, but for root-owned paths. Same no-op/skip
+  # behavior as cleanup_purge_sudo above when sudo isn't available.
+  cleanup_purge_glob_sudo() {
+    if [ "$have_sudo" != "1" ]; then
+      sudo_skips=$((sudo_skips + 1))
+      return 0
+    fi
+    local dir="$1" pattern="$2"
+    [ -n "$dir" ] && [ -d "$dir" ] || return 0
+    sudo find "$dir" -maxdepth 1 -name "$pattern" -delete 2>/dev/null
+  }
+
   echo 'Requesting sudo access (needed for system logs, Trash, and purge) ...'
-  sudo -v
+  # have_sudo/sudo_skips are read by the cleanup_purge*_sudo helpers above
+  # (dynamic scoping — they're in scope for anything this function calls).
+  # If the user cancels the prompt (or sudo just fails), don't abort: run
+  # everything that doesn't need sudo and track what got skipped instead of
+  # silently reporting a clean "Done!" at the end.
+  local have_sudo=1 sudo_skips=0
+  if ! sudo -v; then
+    have_sudo=0
+    echo 'Warning: sudo access unavailable — sudo-gated sections (Trash, system logs, Adobe media cache, Homebrew system cache, periodic maintenance, memory purge) will be skipped.'
+  fi
 
   local free_before free_after
   free_before=$(df -k / | awk 'NR==2{print $4}')
@@ -95,32 +116,32 @@ function cleanup-caches {
   if [ -d /Volumes ]; then
     find /Volumes -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null |
       while IFS= read -r -d '' vol; do
-        _cleanup_purge_sudo "$vol/.Trashes"
+        cleanup_purge_sudo "$vol/.Trashes"
       done
   fi
-  _cleanup_purge_sudo "$HOME/.Trash"
+  cleanup_purge_sudo "$HOME/.Trash"
 
   echo 'Clear system log files ...'
-  _cleanup_purge_glob_sudo /private/var/log/asl '*.asl'
-  _cleanup_purge_sudo /Library/Logs/DiagnosticReports
-  _cleanup_purge_sudo /Library/Logs/Adobe
-  _cleanup_purge "$HOME/Library/Containers/com.apple.mail/Data/Library/Logs/Mail"
-  _cleanup_purge "$HOME/Library/Logs/CoreSimulator"
+  cleanup_purge_glob_sudo /private/var/log/asl '*.asl'
+  cleanup_purge_sudo /Library/Logs/DiagnosticReports
+  cleanup_purge_sudo /Library/Logs/Adobe
+  cleanup_purge "$HOME/Library/Containers/com.apple.mail/Data/Library/Logs/Mail"
+  cleanup_purge "$HOME/Library/Logs/CoreSimulator"
 
   echo 'Clear Adobe cache files ...'
-  _cleanup_purge_sudo "$HOME/Library/Application Support/Adobe/Common/Media Cache Files"
+  cleanup_purge_sudo "$HOME/Library/Application Support/Adobe/Common/Media Cache Files"
 
   echo 'Cleanup iOS applications ...'
-  _cleanup_purge "$HOME/Music/iTunes/iTunes Media/Mobile Applications"
+  cleanup_purge "$HOME/Music/iTunes/iTunes Media/Mobile Applications"
 
   echo 'Remove iOS device backups ...'
-  _cleanup_purge "$HOME/Library/Application Support/MobileSync/Backup"
+  cleanup_purge "$HOME/Library/Application Support/MobileSync/Backup"
 
   echo 'Cleanup Xcode derived data, archives, and simulator caches ...'
-  _cleanup_purge "$HOME/Library/Developer/Xcode/DerivedData"
-  _cleanup_purge "$HOME/Library/Developer/Xcode/Archives"
-  _cleanup_purge "$HOME/Library/Developer/Xcode/iOS DeviceSupport"
-  _cleanup_purge "$HOME/Library/Developer/CoreSimulator/Caches"
+  cleanup_purge "$HOME/Library/Developer/Xcode/DerivedData"
+  cleanup_purge "$HOME/Library/Developer/Xcode/Archives"
+  cleanup_purge "$HOME/Library/Developer/Xcode/iOS DeviceSupport"
+  cleanup_purge "$HOME/Library/Developer/CoreSimulator/Caches"
   if command -v xcrun >/dev/null 2>&1; then
     xcrun simctl delete unavailable &>/dev/null
   fi
@@ -129,9 +150,9 @@ function cleanup-caches {
   if command -v brew >/dev/null 2>&1; then
     brew cleanup --prune=all -s &>/dev/null
     brew tap --repair &>/dev/null
-    _cleanup_purge "$(brew --cache 2>/dev/null)"
+    cleanup_purge "$(brew --cache 2>/dev/null)"
   fi
-  _cleanup_purge_sudo /Library/Caches/Homebrew
+  cleanup_purge_sudo /Library/Caches/Homebrew
 
   echo 'Cleanup any old versions of gems ...'
   if command -v gem >/dev/null 2>&1; then
@@ -146,7 +167,7 @@ function cleanup-caches {
       go clean -modcache &>/dev/null
     fi
   else
-    _cleanup_purge "$HOME/Library/Caches/go-build"
+    cleanup_purge "$HOME/Library/Caches/go-build"
   fi
 
   echo 'Cleanup Node ecosystem caches ...'
@@ -159,7 +180,7 @@ function cleanup-caches {
   if command -v yarn >/dev/null 2>&1; then
     yarn cache clean &>/dev/null
   fi
-  _cleanup_purge "$HOME/.bun/install/cache"
+  cleanup_purge "$HOME/.bun/install/cache"
 
   echo 'Cleanup Python caches ...'
   if command -v pip3 >/dev/null 2>&1; then
@@ -168,34 +189,34 @@ function cleanup-caches {
   if command -v uv >/dev/null 2>&1; then
     uv cache prune &>/dev/null
   else
-    _cleanup_purge "$HOME/.cache/uv"
+    cleanup_purge "$HOME/.cache/uv"
   fi
-  _cleanup_purge "$HOME/Library/Caches/pip"
+  cleanup_purge "$HOME/Library/Caches/pip"
 
   echo 'Cleanup Rust cargo registry cache ...'
   if [ -d "$HOME/.cargo" ]; then
-    _cleanup_purge "$HOME/.cargo/registry/cache"
+    cleanup_purge "$HOME/.cargo/registry/cache"
   fi
 
   echo 'Cleanup Gradle cache ...'
-  _cleanup_purge "$HOME/.gradle/caches"
+  cleanup_purge "$HOME/.gradle/caches"
 
   echo 'Cleanup JetBrains caches ...'
-  _cleanup_purge "$HOME/Library/Caches/JetBrains"
+  cleanup_purge "$HOME/Library/Caches/JetBrains"
 
   echo 'Cleanup gcloud logs and component cache ...'
   # Never touch credentials.db, access_tokens.db, or configurations/.
-  _cleanup_purge "$HOME/.config/gcloud/logs"
-  _cleanup_purge "$HOME/.config/gcloud/cache"
+  cleanup_purge "$HOME/.config/gcloud/logs"
+  cleanup_purge "$HOME/.config/gcloud/cache"
 
   echo 'Cleanup Google Chrome caches (quit Chrome first for best results) ...'
-  _cleanup_purge "$HOME/Library/Caches/Google/Chrome"
+  cleanup_purge "$HOME/Library/Caches/Google/Chrome"
   if [ -d "$HOME/Library/Application Support/Google/Chrome" ]; then
     find "$HOME/Library/Application Support/Google/Chrome" -mindepth 1 -maxdepth 1 -type d -print0 2>/dev/null |
       while IFS= read -r -d '' profile_dir; do
-        _cleanup_purge "$profile_dir/Service Worker/CacheStorage"
-        _cleanup_purge "$profile_dir/Code Cache"
-        _cleanup_purge "$profile_dir/GPUCache"
+        cleanup_purge "$profile_dir/Service Worker/CacheStorage"
+        cleanup_purge "$profile_dir/Code Cache"
+        cleanup_purge "$profile_dir/GPUCache"
       done
   fi
 
@@ -206,7 +227,7 @@ function cleanup-caches {
 
   echo 'Cleanup an allowlist of known-safe app caches ...'
   # Deliberately explicit rather than blanket-purging ~/Library/Caches.
-  _cleanup_purge \
+  cleanup_purge \
     "$HOME/Library/Caches/com.apple.dt.Xcode" \
     "$HOME/Library/Caches/Yarn" \
     "$HOME/Library/Caches/electron" \
@@ -214,19 +235,36 @@ function cleanup-caches {
 
   # Refresh the cached sudo timestamp: sudo -v at the top only holds ~5
   # minutes, and brew/DerivedData/docker cleanup above can easily outrun
-  # that, which would otherwise surprise-prompt for a password here.
-  sudo -v
+  # that, which would otherwise surprise-prompt for a password here. Only
+  # bother if we still have sudo; if the refresh itself fails (timestamp
+  # expired and the user cancels the re-prompt), treat sudo as gone so the
+  # calls below skip instead of hanging on another prompt.
+  if [ "$have_sudo" = "1" ] && ! sudo -v; then
+    have_sudo=0
+  fi
 
   # command -v checks the calling shell's PATH, not sudo's secure_path —
   # that's fine here since /usr/sbin is on both.
   if command -v periodic >/dev/null 2>&1; then
-    echo 'Running the maintenance scripts ...'
-    sudo periodic daily weekly monthly
+    if [ "$have_sudo" = "1" ]; then
+      echo 'Running the maintenance scripts ...'
+      sudo periodic daily weekly monthly
+    else
+      sudo_skips=$((sudo_skips + 1))
+    fi
   fi
 
   if command -v purge >/dev/null 2>&1; then
-    echo 'Purge inactive memory ...'
-    sudo purge
+    if [ "$have_sudo" = "1" ]; then
+      echo 'Purge inactive memory ...'
+      sudo purge
+    else
+      sudo_skips=$((sudo_skips + 1))
+    fi
+  fi
+
+  if [ "$sudo_skips" -gt 0 ]; then
+    echo "Note: skipped $sudo_skips sudo-gated section(s) — no sudo access."
   fi
 
   free_after=$(df -k / | awk 'NR==2{print $4}')

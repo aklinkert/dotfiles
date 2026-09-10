@@ -6,3 +6,9 @@
 # machine-local command symlinks (point to ~/.ccs), not portable
 .claude/commands/ccs
 .claude/commands/ccs.md
+
+# machine-local hooks referencing internal hosts, not for a public repo
+.claude/hooks/bare-issue-ref-guard.mjs
+.claude/hooks/ghe-memory-symlink.sh
+.claude/hooks/guardrails.mjs
+.claude/hooks/read-size-advisor.mjs

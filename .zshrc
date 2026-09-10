@@ -74,7 +74,10 @@ source ~/dotfiles/shell_common.sh
 source ~/dotfiles/functions.sh
 
 # Zsh-specific: reload alias
-alias reload="source ~/.zshrc"
+# exec a fresh login shell instead of re-sourcing .zshrc in place — sourcing
+# double-sources oh-my-zsh (compinit re-runs, etc.) and can leave a
+# half-initialized shell if anything aborts partway through.
+alias reload="exec zsh -l"
 
 # Zsh-specific configurations will be loaded from ~/dotfiles/zsh/
 if [ -d ~/dotfiles/zsh ]; then

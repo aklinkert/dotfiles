@@ -8,6 +8,7 @@
 	excludesfile = ~/.gitignore_global
 	mergeoptions = --no-edit
 	autocrlf = false
+	editor = code -w
 [filter "lfs"]
 	clean = git lfs clean %f
 	smudge = git lfs smudge %f
@@ -17,19 +18,14 @@
 [status]
 	submoduleSummary = true
 [diff]
-	tool = meld
+	tool = vscode
 [difftool]
 	prompt = false
-[difftool "meld"]
-	trustExitCode = true
-	cmd = open -W -a Meld --args \"$LOCAL\" \"$REMOTE\"
 [merge]
-	tool = meld
+	tool = vscode
 [mergetool]
 	prompt = false
-[mergetool "meld"]
-	trustExitCode = true
-	cmd = open -W -a Meld --args --auto-merge \"$LOCAL\" \"$BASE\" \"$REMOTE\" --output=\"$MERGED\"
+	keepBackup = false
 [commit]
 	gpgsign = true
 [credential]
@@ -54,3 +50,9 @@
 [credential "https://gist.github.com"]
 	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
+[difftool "vscode"]
+	cmd = code --wait --diff \"$LOCAL\" \"$REMOTE\"
+	trustExitCode = true
+[mergetool "vscode"]
+	cmd = code --wait --merge \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\"
+	trustExitCode = true

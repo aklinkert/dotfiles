@@ -12,7 +12,7 @@ olddir=~/dotfiles_old             # old dotfiles backup directory
 
 # Files/folders to symlink in homedir
 # Now includes both .bash_profile and .zshrc for dual shell support
-files=".gitignore_global .gitconfig .bash_profile .zshrc functions.sh shell_common.sh git-completion.bash .htoprc .inputrc .jshintrc .direnvrc"
+files=".gitignore_global .gitconfig .bash_profile .zshrc functions.sh shell_common.sh git-completion.bash .htoprc .inputrc .jshintrc .direnvrc .default-npm-packages"
 
 ##########
 

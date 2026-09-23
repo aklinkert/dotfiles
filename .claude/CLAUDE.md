@@ -1,8 +1,21 @@
 # Global Preferences
 
-See `~/.claude/rules/` for detailed rules on git workflow, interaction style, and preferred libraries.
+The detailed rules below are IMPORTED, not merely referenced. Each `@` line pulls the
+file's full text into context at session start. Do not replace them with prose pointers:
+a pointer to `~/.claude/rules/` is never loaded, so every rule in it silently stops applying.
+
+@~/.claude/rules/agent-delegation.md
+@~/.claude/rules/interaction.md
+@~/.claude/rules/git-workflow.md
+@~/.claude/rules/preferred-libraries.md
 
 Enterprise-specific rules and agents are distributed via a private Claude Code plugin, not tracked in this repo.
+
+## Chat language
+
+ALWAYS reply to me in English, in every session, regardless of the language of the
+code, documents or context being worked on. Deliverables keep whatever language they
+require (a German offer stays German) — the conversation with me does not.
 
 ## Memory Storage
 

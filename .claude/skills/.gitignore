@@ -2,3 +2,5 @@ google-agents-cli-*
 # machine-local symlinks (point outside the repo), not portable — don't track
 ccs-delegation
 weekly-recap
+# claude.ai-synced skills, per-machine buckets, may contain company content
+synced/

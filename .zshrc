@@ -124,3 +124,6 @@ unsetopt SHARE_HISTORY      # Don't share history between concurrent sessions
 setopt HIST_IGNORE_DUPS     # Don't record duplicates
 setopt HIST_IGNORE_SPACE    # Don't record commands starting with space
 setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks from history
+
+# Created by `pipx` on 2026-09-28 12:22:44
+export PATH="$PATH:/Users/alex/Library/Python/3.13/bin"

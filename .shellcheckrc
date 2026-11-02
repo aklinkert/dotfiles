@@ -1,0 +1,19 @@
+# The dotfiles are sourced by both bash and zsh; shellcheck only knows bash.
+shell=bash
+
+# Sourced files are resolved at runtime ($HOME, $dir, brew prefixes).
+disable=SC1090,SC1091
+# Unquoted expansions are used throughout and the paths/values involved never
+# contain whitespace; quoting everything would be a mass edit with no benefit.
+disable=SC2086
+# `local x=$(cmd)` / `cd` without `|| exit` in interactive helpers: the
+# masked return values are not used.
+disable=SC2155,SC2164
+# False positive: `$1` etc. inside the aliases are escaped (\$1) for awk.
+disable=SC2142
+# `mkdir -p -m` only applies the mode to the last component, which is intended.
+disable=SC2174
+# Functions in darwin_common.sh are called interactively, not from scripts.
+disable=SC2329
+# Glob arguments in interactive photo helpers (files never start with a dash).
+disable=SC2035

@@ -27,9 +27,9 @@ if [[ $- = *i* ]]; then
 
   if [[ $(type -t lp_title) == function ]]; then
     if [ -n "${PROJECT_PREFIX}" ]; then
-      lp_title "${PROJECT_PREFIX} - $(basename $(pwd))"
+      lp_title "${PROJECT_PREFIX} - $(basename "$(pwd)")"
     else
-      lp_title "$(basename $(pwd))"
+      lp_title "$(basename "$(pwd)")"
     fi
   fi
 fi

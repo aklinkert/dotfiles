@@ -5,6 +5,9 @@ on:
   pull_request:
 permissions:
   contents: read
+env:
+  # renovate: datasource=github-releases depName=koalaman/shellcheck
+  SHELLCHECK_VERSION: v0.11.0
 jobs:
   shellcheck:
     runs-on: ubuntu-24.04
@@ -13,6 +16,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+      # The preinstalled shellcheck on the runner image is older and reports
+      # different findings, so pin the release used locally.
+      - name: Install shellcheck
+        run: |
+          curl -fsSL "https://github.com/koalaman/shellcheck/releases/download/${SHELLCHECK_VERSION}/shellcheck-${SHELLCHECK_VERSION}.linux.x86_64.tar.xz" |
+            tar -xJ --strip-components=1 -C "$RUNNER_TEMP" "shellcheck-${SHELLCHECK_VERSION}/shellcheck"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
       # Only the repo's own bash scripts. Vendored code (liquidprompt,
       # git-completion.bash, .agents/skills, vendored .claude/skills) and the
       # zsh files (unsupported by shellcheck) are not linted.

@@ -1,0 +1,25 @@
+name: lint
+on:
+  push:
+    branches: [master]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  shellcheck:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # Only the repo's own bash scripts. Vendored code (liquidprompt,
+      # git-completion.bash, .agents/skills, vendored .claude/skills) and the
+      # zsh files (unsupported by shellcheck) are not linted.
+      - name: shellcheck
+        run: |
+          shellcheck .bash_profile bash/completions.bash darwin_common.sh \
+            functions.sh linkfiles.sh linux_common.sh shell_common.sh \
+            save-*.sh switch-shell.sh customers/_all.sh \
+            .claude/statusline-command.sh .claude/hooks/*.sh \
+            .claude/skills/renovate-review/scripts/*.sh

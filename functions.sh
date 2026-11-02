@@ -20,7 +20,7 @@ function kube-watch-all-without-kube-system {
 
 function kube-watch-all-without {
   local interval="${KUBE_WATCH_INTERVAL:-1}"
-  local cmdLine="kubectl get pods --all-namespaces ${filters}"
+  local cmdLine="kubectl get pods --all-namespaces"
 
   for filter in "$@"; do
     cmdLine="${cmdLine} | grep -v \"${filter}\""
@@ -141,7 +141,8 @@ function echoc {
     local color=$1
     local exp=$2
 
-    if ! [[ $color =~ '^[0-9]$' ]] ; then
+    local digit_re='^[0-9]$'
+    if ! [[ $color =~ $digit_re ]] ; then
        case $(echo $color | tr '[:upper:]' '[:lower:]') in
         black) color=0 ;;
         red) color=1 ;;

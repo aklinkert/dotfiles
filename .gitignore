@@ -11,4 +11,6 @@
 .claude/hooks/bare-issue-ref-guard.mjs
 .claude/hooks/ghe-memory-symlink.sh
 .claude/hooks/guardrails.mjs
+.claude/hooks/guardrails.test.mjs
+.claude/hooks/merge-allowlist.json
 .claude/hooks/read-size-advisor.mjs

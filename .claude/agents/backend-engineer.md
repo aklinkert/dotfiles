@@ -5,7 +5,7 @@ description: >
   database queries/migrations, creating API endpoints, background services, and
   refactoring Go code. Delegates dashboard/frontend work to frontend-engineer
   and code review to code-reviewer.
-model: opus
+model: sonnet
 color: blue
 ---
 

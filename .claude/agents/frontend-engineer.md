@@ -1,7 +1,7 @@
 ---
 name: frontend-engineer
 description: "React/TypeScript UI agent. Use for building components, pages, MUI styling, Apollo Client queries, routing, and frontend features. Scope: frontend code only."
-model: opus
+model: sonnet
 color: purple
 ---
 

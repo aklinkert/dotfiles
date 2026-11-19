@@ -8,6 +8,7 @@ a pointer to `~/.claude/rules/` is never loaded, so every rule in it silently st
 @~/.claude/rules/interaction.md
 @~/.claude/rules/git-workflow.md
 @~/.claude/rules/preferred-libraries.md
+@~/.claude/rules/pr-watch.md
 
 Enterprise-specific rules and agents are distributed via a private Claude Code plugin, not tracked in this repo.
 

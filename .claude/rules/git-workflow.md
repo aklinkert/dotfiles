@@ -14,3 +14,18 @@
 - Merge only when required checks pass. Never use `--admin` or another branch-protection bypass.
 - Owner match is exact. Another org or user on the same host is NOT opted in.
 - To opt in a new owner: add it to `merge-allowlist.json` and to the `autoMode` allow entry in `~/.claude/settings.json`.
+- The rules above (default and allowlist) cover PRs opened by our shared git identity, the PRs agents open. They do not cover Renovate PRs.
+
+## Renovate PRs (author `app/renovate`)
+
+Decided by Alex on 2026-11-23. Applies on every host and in every org, allowlisted or not. "The sweep" means any org-level bot that merges Renovate PRs, where one exists.
+
+- **Renovate or a Renovate merge sweep merges first.** Leave a PR alone while one of them will merge it: Renovate automerge is on and the PR is green, or the sweep's only refusals are temporary (`too_new`, fanout soak, `blocked_by_policy`, a pending merge state).
+- **We merge only as fallback**, in two cases:
+  1. a major version bump, or
+  2. the sweep refuses the PR permanently and Renovate's automerge will not merge it either (automerge off, or on but stuck).
+- Fallback merges follow the renovate-review skill: a `MERGE` verdict from step 3 (green, confined, no breaking change that touches the repo), approve, then merge pinned to the reviewed head SHA.
+- Terraform PRs need a "No changes" plan for the reviewed head, or the change in the plan must be the intended one.
+- Give Renovate and the sweep their chance first: no fallback merge of a PR younger than the sweep's 24h PR-age floor.
+- Never merge with failing required checks, and never use `--admin` or another bypass. A red PR gets a fix, not a merge.
+- Onboarding ("Configure Renovate") PRs stay with the repo owner. The sweep's onboarding opt-in gate exists for the owner's consent.

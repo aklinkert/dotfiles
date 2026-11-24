@@ -41,7 +41,7 @@ for scope in "$@"; do
         echo "list-prs: cannot list $scope" >&2; failed=1; continue
       fi ;;
     *)
-      if ! urls=$(gh search prs --owner "$scope" --author "$RENOVATE_AUTHOR" --state open --json url --limit 200 --jq '.[].url' </dev/null); then
+      if ! urls=$(gh search prs --owner "$scope" --archived=false --author "$RENOVATE_AUTHOR" --state open --json url --limit 200 --jq '.[].url' </dev/null); then
         echo "list-prs: cannot search $scope" >&2; failed=1; continue
       fi ;;
   esac

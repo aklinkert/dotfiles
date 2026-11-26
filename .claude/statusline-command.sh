@@ -30,7 +30,8 @@ pr_seg=""
 if command -v jq >/dev/null 2>&1; then
   # Single jq call (this runs on every render): emit number + review_state
   # tab-separated so both come back from one invocation.
-  IFS=$'\t' read -r pr_num pr_state < <(printf '%s' "$input" | jq -r '.pr // {} | "\(.number // "")\t\(.review_state // "")"' 2>/dev/null)
+  # \x1f separator: tab is IFS-whitespace, so empty fields would collapse.
+  IFS=$'\x1f' read -r pr_num pr_state session_id < <(printf '%s' "$input" | jq -r '"\(.pr.number // "")\u001f\(.pr.review_state // "")\u001f\(.session_id // "")"' 2>/dev/null)
   # Injection hardening: pr_num must be a bare integer before it ever reaches
   # output/printf. review_state is safe as-is since it's only matched against
   # fixed `case` patterns below, never interpolated.
@@ -78,6 +79,15 @@ sep=" ${sepc} "
 prefix=""
 [ -n "$profile" ] && prefix="${esc}[2;38;5;245m⚙ ${profile}${esc}[0m${sep}"
 
+# Agent-network address peers use to reach this session, exactly as the server
+# returned it to net_register (hooks/agent-network-address.sh caches it). No
+# cache entry = not registered via a tool call yet, so show nothing rather than guess.
+net_seg=""
+if [[ "$session_id" =~ ^[0-9a-f-]{36}$ ]]; then
+  addr="$(head -1 "$HOME/.cache/agent-net/$session_id" 2>/dev/null)"
+  [[ "$addr" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]] && net_seg="${esc}[38;5;110m✉ ${addr}${esc}[0m"
+fi
+
 # Assemble the full styled line, profile first, path collapsed:
 #   ⚙ profile • <path> • <git> • <context> • <model> • <cost> …
 if [[ "$out" == "${esc}[36m"*"${esc}[0m"* ]]; then
@@ -86,9 +96,11 @@ if [[ "$out" == "${esc}[36m"*"${esc}[0m"* ]]; then
   tail="${rest#*"${esc}[0m"}"         # separator + remaining segments
   full="${prefix}${esc}[36m$(shorten_path "$path")${esc}[0m${tail}"
   [ -n "$pr_seg" ] && full="${full}${sep}${pr_seg}"
+  [ -n "$net_seg" ] && full="${full}${sep}${net_seg}"
 else
   full="${prefix}${out}"
   [ -n "$pr_seg" ] && full="${full}${sep}${pr_seg}"
+  [ -n "$net_seg" ] && full="${full}${sep}${net_seg}"
 fi
 
 # Width-aware wrap. Claude Code exports $COLUMNS to the statusline command, and

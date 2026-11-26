@@ -62,6 +62,9 @@ plugins=(
   zsh-autosuggestions         # Command suggestions based on history
 )
 
+# Homebrew completions (gh, glab, k9s, ...): must precede compinit in oh-my-zsh.sh
+[[ -d /opt/homebrew/share/zsh/site-functions ]] && fpath=(/opt/homebrew/share/zsh/site-functions $fpath)
+
 # Load Oh My Zsh (now with PATH properly set)
 source $ZSH/oh-my-zsh.sh
 
